@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from datetime import datetime, timedelta, UTC
 
 import jwt
 from fastapi import Header, HTTPException
@@ -9,6 +10,17 @@ class CurrentUser:
     id: str
     github_login: str
     token: str
+
+
+def generate_service_token(secret: str) -> str:
+    """Generate a JWT for service-to-service calls (e.g. webhook flows)."""
+    now = datetime.now(UTC)
+    payload = {
+        "sub": "service:deployments",
+        "iat": now,
+        "exp": now + timedelta(minutes=5),
+    }
+    return jwt.encode(payload, secret, algorithm="HS256")
 
 
 def get_current_user(authorization: str = Header(...)) -> CurrentUser:

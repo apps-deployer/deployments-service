@@ -4,6 +4,7 @@ import uuid
 
 from fastapi import APIRouter, HTTPException, Request
 
+from src.auth import generate_service_token
 from src.schemas import TriggerType
 from src.services.deployment import DeploymentService
 
@@ -46,6 +47,9 @@ async def github_push(request: Request):
 
     if not repo_url or not commit_sha:
         raise HTTPException(status_code=400, detail="Missing repo URL or commit SHA")
+
+    # Use service token for service-to-service gRPC calls
+    grpc.with_token(generate_service_token(settings.auth.jwt_secret))
 
     async with factory() as session:
         svc = DeploymentService(session, grpc)
