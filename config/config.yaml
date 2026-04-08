@@ -1,0 +1,28 @@
+env: "local"
+
+db:
+  host: "localhost"
+  port: 5433
+  user: "postgres"
+  password: "postgres"
+  name: "deployments_db"
+
+redis:
+  url: "redis://localhost:6379/0"
+
+grpc:
+  projects_service_addr: "localhost:50051"
+
+server:
+  host: "0.0.0.0"
+  port: 8000
+  base_url: "http://localhost:8000"
+
+registry:
+  url: "registry.localhost:5000"
+
+auth:
+  jwt_secret: "your_jwt_secret"
+
+github:
+  webhook_secret: ""
