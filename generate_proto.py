@@ -15,6 +15,7 @@ PROTO_FILES = [
     f"{PROTO_DIR}/projects/v1/envs.proto",
     f"{PROTO_DIR}/projects/v1/deploy_configs.proto",
     f"{PROTO_DIR}/projects/v1/vars.proto",
+    f"{PROTO_DIR}/projects/v1/frameworks.proto",
 ]
 
 sys.exit(protoc.main([
