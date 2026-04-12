@@ -3,6 +3,7 @@ import hmac
 import uuid
 
 from fastapi import APIRouter, HTTPException, Request
+from fastapi.responses import JSONResponse
 
 from src.auth import generate_service_token
 from src.schemas import TriggerType
@@ -37,7 +38,7 @@ async def github_push(request: Request):
 
     ref = payload.get("ref", "")
     if not ref.startswith("refs/heads/"):
-        return {"status": "ignored", "reason": "not a branch push"}
+        return JSONResponse(status_code=200, content={"status": "ignored", "reason": "not a branch push"})
 
     branch = ref.removeprefix("refs/heads/")
     repo_url = payload.get("repository", {}).get("clone_url", "")
@@ -57,7 +58,7 @@ async def github_push(request: Request):
         try:
             env = await grpc.get_env_by_git(repo_url, branch)
         except Exception:
-            return {"status": "ignored", "reason": "no matching environment"}
+            return JSONResponse(status_code=200, content={"status": "ignored", "reason": "no matching environment"})
 
         run = await svc.create_deployment(
             project_id=uuid.UUID(env.project_id),
