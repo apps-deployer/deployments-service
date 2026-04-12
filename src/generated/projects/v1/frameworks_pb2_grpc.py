@@ -4,7 +4,7 @@ import grpc
 import warnings
 
 from google.protobuf import empty_pb2 as google_dot_protobuf_dot_empty__pb2
-from projects.v1 import projects_pb2 as projects_dot_v1_dot_projects__pb2
+from projects.v1 import frameworks_pb2 as projects_dot_v1_dot_frameworks__pb2
 
 GRPC_GENERATED_VERSION = '1.80.0'
 GRPC_VERSION = grpc.__version__
@@ -19,15 +19,16 @@ except ImportError:
 if _version_not_supported:
     raise RuntimeError(
         f'The grpc package installed is at version {GRPC_VERSION},'
-        + ' but the generated code in projects/v1/projects_pb2_grpc.py depends on'
+        + ' but the generated code in projects/v1/frameworks_pb2_grpc.py depends on'
         + f' grpcio>={GRPC_GENERATED_VERSION}.'
         + f' Please upgrade your grpc module to grpcio>={GRPC_GENERATED_VERSION}'
         + f' or downgrade your generated code using grpcio-tools<={GRPC_VERSION}.'
     )
 
 
-class ProjectServiceStub(object):
-    """Сервис ProjectService предоставляет CRUD интерфейс для управления проектами
+class FrameworkServiceStub(object):
+    """Сервис FrameworkService предоставляет CRUD интерфейс для управления 
+    шаблонами конфигурации деплоя
     """
 
     def __init__(self, channel):
@@ -36,114 +37,116 @@ class ProjectServiceStub(object):
         Args:
             channel: A grpc.Channel.
         """
-        self.GetProject = channel.unary_unary(
-                '/projects.v1.ProjectService/GetProject',
-                request_serializer=projects_dot_v1_dot_projects__pb2.GetProjectRequest.SerializeToString,
-                response_deserializer=projects_dot_v1_dot_projects__pb2.ProjectResponse.FromString,
+        self.GetFramework = channel.unary_unary(
+                '/projects.v1.FrameworkService/GetFramework',
+                request_serializer=projects_dot_v1_dot_frameworks__pb2.GetFrameworkRequest.SerializeToString,
+                response_deserializer=projects_dot_v1_dot_frameworks__pb2.FrameworkResponse.FromString,
                 _registered_method=True)
-        self.ListProjects = channel.unary_unary(
-                '/projects.v1.ProjectService/ListProjects',
-                request_serializer=projects_dot_v1_dot_projects__pb2.ListProjectsRequest.SerializeToString,
-                response_deserializer=projects_dot_v1_dot_projects__pb2.ListProjectsResponse.FromString,
+        self.ListFrameworks = channel.unary_unary(
+                '/projects.v1.FrameworkService/ListFrameworks',
+                request_serializer=projects_dot_v1_dot_frameworks__pb2.ListFrameworksRequest.SerializeToString,
+                response_deserializer=projects_dot_v1_dot_frameworks__pb2.ListFrameworksResponse.FromString,
                 _registered_method=True)
-        self.CreateProject = channel.unary_unary(
-                '/projects.v1.ProjectService/CreateProject',
-                request_serializer=projects_dot_v1_dot_projects__pb2.CreateProjectRequest.SerializeToString,
-                response_deserializer=projects_dot_v1_dot_projects__pb2.ProjectResponse.FromString,
+        self.CreateFramework = channel.unary_unary(
+                '/projects.v1.FrameworkService/CreateFramework',
+                request_serializer=projects_dot_v1_dot_frameworks__pb2.CreateFrameworkRequest.SerializeToString,
+                response_deserializer=projects_dot_v1_dot_frameworks__pb2.FrameworkResponse.FromString,
                 _registered_method=True)
-        self.UpdateProject = channel.unary_unary(
-                '/projects.v1.ProjectService/UpdateProject',
-                request_serializer=projects_dot_v1_dot_projects__pb2.UpdateProjectRequest.SerializeToString,
+        self.UpdateFramework = channel.unary_unary(
+                '/projects.v1.FrameworkService/UpdateFramework',
+                request_serializer=projects_dot_v1_dot_frameworks__pb2.UpdateFrameworkRequest.SerializeToString,
                 response_deserializer=google_dot_protobuf_dot_empty__pb2.Empty.FromString,
                 _registered_method=True)
-        self.DeleteProject = channel.unary_unary(
-                '/projects.v1.ProjectService/DeleteProject',
-                request_serializer=projects_dot_v1_dot_projects__pb2.DeleteProjectRequest.SerializeToString,
+        self.DeleteFramework = channel.unary_unary(
+                '/projects.v1.FrameworkService/DeleteFramework',
+                request_serializer=projects_dot_v1_dot_frameworks__pb2.DeleteFrameworkRequest.SerializeToString,
                 response_deserializer=google_dot_protobuf_dot_empty__pb2.Empty.FromString,
                 _registered_method=True)
 
 
-class ProjectServiceServicer(object):
-    """Сервис ProjectService предоставляет CRUD интерфейс для управления проектами
+class FrameworkServiceServicer(object):
+    """Сервис FrameworkService предоставляет CRUD интерфейс для управления 
+    шаблонами конфигурации деплоя
     """
 
-    def GetProject(self, request, context):
-        """GetProject возвращает информацию о проекте по его ID
+    def GetFramework(self, request, context):
+        """GetFramework возвращает шаблон конфигурации деплоя по его ID
         """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
-    def ListProjects(self, request, context):
-        """ListProjects возвращает список проектов, принадлежащих пользователю
+    def ListFrameworks(self, request, context):
+        """ListFrameworks возвращает список шаблонов конфигурации деплоя
         """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
-    def CreateProject(self, request, context):
-        """CreateProject создает новый проект с указанными параметрами 
+    def CreateFramework(self, request, context):
+        """CreateFramework создает новый шаблон конфигурации деплоя
         """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
-    def UpdateProject(self, request, context):
-        """UpdateProject обновляет информацию о проекте по его ID
+    def UpdateFramework(self, request, context):
+        """UpdateFramework обновляет шаблон конфигурации деплоя по его ID
         """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
-    def DeleteProject(self, request, context):
-        """DeleteProject удаляет проект по его ID
+    def DeleteFramework(self, request, context):
+        """DeleteFramework удаляет шаблон конфигурации деплоя по его ID
         """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
 
-def add_ProjectServiceServicer_to_server(servicer, server):
+def add_FrameworkServiceServicer_to_server(servicer, server):
     rpc_method_handlers = {
-            'GetProject': grpc.unary_unary_rpc_method_handler(
-                    servicer.GetProject,
-                    request_deserializer=projects_dot_v1_dot_projects__pb2.GetProjectRequest.FromString,
-                    response_serializer=projects_dot_v1_dot_projects__pb2.ProjectResponse.SerializeToString,
+            'GetFramework': grpc.unary_unary_rpc_method_handler(
+                    servicer.GetFramework,
+                    request_deserializer=projects_dot_v1_dot_frameworks__pb2.GetFrameworkRequest.FromString,
+                    response_serializer=projects_dot_v1_dot_frameworks__pb2.FrameworkResponse.SerializeToString,
             ),
-            'ListProjects': grpc.unary_unary_rpc_method_handler(
-                    servicer.ListProjects,
-                    request_deserializer=projects_dot_v1_dot_projects__pb2.ListProjectsRequest.FromString,
-                    response_serializer=projects_dot_v1_dot_projects__pb2.ListProjectsResponse.SerializeToString,
+            'ListFrameworks': grpc.unary_unary_rpc_method_handler(
+                    servicer.ListFrameworks,
+                    request_deserializer=projects_dot_v1_dot_frameworks__pb2.ListFrameworksRequest.FromString,
+                    response_serializer=projects_dot_v1_dot_frameworks__pb2.ListFrameworksResponse.SerializeToString,
             ),
-            'CreateProject': grpc.unary_unary_rpc_method_handler(
-                    servicer.CreateProject,
-                    request_deserializer=projects_dot_v1_dot_projects__pb2.CreateProjectRequest.FromString,
-                    response_serializer=projects_dot_v1_dot_projects__pb2.ProjectResponse.SerializeToString,
+            'CreateFramework': grpc.unary_unary_rpc_method_handler(
+                    servicer.CreateFramework,
+                    request_deserializer=projects_dot_v1_dot_frameworks__pb2.CreateFrameworkRequest.FromString,
+                    response_serializer=projects_dot_v1_dot_frameworks__pb2.FrameworkResponse.SerializeToString,
             ),
-            'UpdateProject': grpc.unary_unary_rpc_method_handler(
-                    servicer.UpdateProject,
-                    request_deserializer=projects_dot_v1_dot_projects__pb2.UpdateProjectRequest.FromString,
+            'UpdateFramework': grpc.unary_unary_rpc_method_handler(
+                    servicer.UpdateFramework,
+                    request_deserializer=projects_dot_v1_dot_frameworks__pb2.UpdateFrameworkRequest.FromString,
                     response_serializer=google_dot_protobuf_dot_empty__pb2.Empty.SerializeToString,
             ),
-            'DeleteProject': grpc.unary_unary_rpc_method_handler(
-                    servicer.DeleteProject,
-                    request_deserializer=projects_dot_v1_dot_projects__pb2.DeleteProjectRequest.FromString,
+            'DeleteFramework': grpc.unary_unary_rpc_method_handler(
+                    servicer.DeleteFramework,
+                    request_deserializer=projects_dot_v1_dot_frameworks__pb2.DeleteFrameworkRequest.FromString,
                     response_serializer=google_dot_protobuf_dot_empty__pb2.Empty.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
-            'projects.v1.ProjectService', rpc_method_handlers)
+            'projects.v1.FrameworkService', rpc_method_handlers)
     server.add_generic_rpc_handlers((generic_handler,))
-    server.add_registered_method_handlers('projects.v1.ProjectService', rpc_method_handlers)
+    server.add_registered_method_handlers('projects.v1.FrameworkService', rpc_method_handlers)
 
 
  # This class is part of an EXPERIMENTAL API.
-class ProjectService(object):
-    """Сервис ProjectService предоставляет CRUD интерфейс для управления проектами
+class FrameworkService(object):
+    """Сервис FrameworkService предоставляет CRUD интерфейс для управления 
+    шаблонами конфигурации деплоя
     """
 
     @staticmethod
-    def GetProject(request,
+    def GetFramework(request,
             target,
             options=(),
             channel_credentials=None,
@@ -156,9 +159,9 @@ class ProjectService(object):
         return grpc.experimental.unary_unary(
             request,
             target,
-            '/projects.v1.ProjectService/GetProject',
-            projects_dot_v1_dot_projects__pb2.GetProjectRequest.SerializeToString,
-            projects_dot_v1_dot_projects__pb2.ProjectResponse.FromString,
+            '/projects.v1.FrameworkService/GetFramework',
+            projects_dot_v1_dot_frameworks__pb2.GetFrameworkRequest.SerializeToString,
+            projects_dot_v1_dot_frameworks__pb2.FrameworkResponse.FromString,
             options,
             channel_credentials,
             insecure,
@@ -170,7 +173,7 @@ class ProjectService(object):
             _registered_method=True)
 
     @staticmethod
-    def ListProjects(request,
+    def ListFrameworks(request,
             target,
             options=(),
             channel_credentials=None,
@@ -183,9 +186,9 @@ class ProjectService(object):
         return grpc.experimental.unary_unary(
             request,
             target,
-            '/projects.v1.ProjectService/ListProjects',
-            projects_dot_v1_dot_projects__pb2.ListProjectsRequest.SerializeToString,
-            projects_dot_v1_dot_projects__pb2.ListProjectsResponse.FromString,
+            '/projects.v1.FrameworkService/ListFrameworks',
+            projects_dot_v1_dot_frameworks__pb2.ListFrameworksRequest.SerializeToString,
+            projects_dot_v1_dot_frameworks__pb2.ListFrameworksResponse.FromString,
             options,
             channel_credentials,
             insecure,
@@ -197,7 +200,7 @@ class ProjectService(object):
             _registered_method=True)
 
     @staticmethod
-    def CreateProject(request,
+    def CreateFramework(request,
             target,
             options=(),
             channel_credentials=None,
@@ -210,9 +213,9 @@ class ProjectService(object):
         return grpc.experimental.unary_unary(
             request,
             target,
-            '/projects.v1.ProjectService/CreateProject',
-            projects_dot_v1_dot_projects__pb2.CreateProjectRequest.SerializeToString,
-            projects_dot_v1_dot_projects__pb2.ProjectResponse.FromString,
+            '/projects.v1.FrameworkService/CreateFramework',
+            projects_dot_v1_dot_frameworks__pb2.CreateFrameworkRequest.SerializeToString,
+            projects_dot_v1_dot_frameworks__pb2.FrameworkResponse.FromString,
             options,
             channel_credentials,
             insecure,
@@ -224,7 +227,7 @@ class ProjectService(object):
             _registered_method=True)
 
     @staticmethod
-    def UpdateProject(request,
+    def UpdateFramework(request,
             target,
             options=(),
             channel_credentials=None,
@@ -237,8 +240,8 @@ class ProjectService(object):
         return grpc.experimental.unary_unary(
             request,
             target,
-            '/projects.v1.ProjectService/UpdateProject',
-            projects_dot_v1_dot_projects__pb2.UpdateProjectRequest.SerializeToString,
+            '/projects.v1.FrameworkService/UpdateFramework',
+            projects_dot_v1_dot_frameworks__pb2.UpdateFrameworkRequest.SerializeToString,
             google_dot_protobuf_dot_empty__pb2.Empty.FromString,
             options,
             channel_credentials,
@@ -251,7 +254,7 @@ class ProjectService(object):
             _registered_method=True)
 
     @staticmethod
-    def DeleteProject(request,
+    def DeleteFramework(request,
             target,
             options=(),
             channel_credentials=None,
@@ -264,8 +267,8 @@ class ProjectService(object):
         return grpc.experimental.unary_unary(
             request,
             target,
-            '/projects.v1.ProjectService/DeleteProject',
-            projects_dot_v1_dot_projects__pb2.DeleteProjectRequest.SerializeToString,
+            '/projects.v1.FrameworkService/DeleteFramework',
+            projects_dot_v1_dot_frameworks__pb2.DeleteFrameworkRequest.SerializeToString,
             google_dot_protobuf_dot_empty__pb2.Empty.FromString,
             options,
             channel_credentials,
