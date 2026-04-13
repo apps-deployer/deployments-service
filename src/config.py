@@ -15,7 +15,8 @@ class DbConfig(BaseModel):
 
     @property
     def url(self) -> str:
-        return f"postgresql+asyncpg://{self.user}:{self.password}@{self.host}:{self.port}/{self.name}"
+        from urllib.parse import quote
+        return f"postgresql+asyncpg://{quote(self.user, safe='')}:{quote(self.password, safe='')}@{self.host}:{self.port}/{self.name}"
 
 
 class RedisConfig(BaseModel):

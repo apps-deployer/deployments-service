@@ -22,7 +22,6 @@ COPY requirements.txt .
 RUN uv pip install --system --no-cache -r requirements.txt
 
 COPY src/ src/
-COPY config/ config/
 
 # CELERY_QUEUE is set per container in docker-compose (build or deploy)
 ENV CELERY_QUEUE=build
