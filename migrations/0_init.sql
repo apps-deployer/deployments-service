@@ -21,8 +21,8 @@ CREATE TABLE IF NOT EXISTS deployment.deployment_runs (
     updated_at TIMESTAMP NOT NULL DEFAULT now()
 );
 
-CREATE INDEX idx_deployment_runs_project_id ON deployment.deployment_runs(project_id);
-CREATE INDEX idx_deployment_runs_env_id ON deployment.deployment_runs(env_id);
+CREATE INDEX IF NOT EXISTS idx_deployment_runs_project_id ON deployment.deployment_runs(project_id);
+CREATE INDEX IF NOT EXISTS idx_deployment_runs_env_id ON deployment.deployment_runs(env_id);
 
 CREATE TABLE IF NOT EXISTS deployment.jobs (
     id UUID PRIMARY KEY DEFAULT uuidv7(),
@@ -44,7 +44,7 @@ CREATE TABLE IF NOT EXISTS deployment.jobs (
     UNIQUE(deployment_run_id, type)
 );
 
-CREATE INDEX idx_jobs_run_id ON deployment.jobs(deployment_run_id);
+CREATE INDEX IF NOT EXISTS idx_jobs_run_id ON deployment.jobs(deployment_run_id);
 
 CREATE TABLE IF NOT EXISTS deployment.artifacts (
     id UUID PRIMARY KEY DEFAULT uuidv7(),
@@ -58,22 +58,22 @@ CREATE TABLE IF NOT EXISTS deployment.artifacts (
     UNIQUE(deployment_run_id)
 );
 
-CREATE INDEX idx_artifacts_run_id ON deployment.artifacts(deployment_run_id);
+CREATE INDEX IF NOT EXISTS idx_artifacts_run_id ON deployment.artifacts(deployment_run_id);
 
 CREATE OR REPLACE FUNCTION utils.update_updated_at()
 RETURNS TRIGGER AS $$
-BEGIN 
+BEGIN
   NEW.updated_at = now();
   RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE TRIGGER trg_update_deployment_runs
+CREATE OR REPLACE TRIGGER trg_update_deployment_runs
 BEFORE UPDATE ON deployment.deployment_runs
 FOR EACH ROW
 EXECUTE FUNCTION utils.update_updated_at();
 
-CREATE TRIGGER trg_update_jobs
+CREATE OR REPLACE TRIGGER trg_update_jobs
 BEFORE UPDATE ON deployment.jobs
 FOR EACH ROW
 EXECUTE FUNCTION utils.update_updated_at();
