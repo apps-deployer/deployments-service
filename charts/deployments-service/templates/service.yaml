@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: deployments-service
+  namespace: {{ .Values.namespace }}
+spec:
+  selector:
+    app: deployments-service-api
+  ports:
+    - port: {{ .Values.server.port }}
+      targetPort: {{ .Values.server.port }}
+  type: ClusterIP
