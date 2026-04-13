@@ -1,0 +1,34 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: deployments-service-build-worker
+  namespace: {{ .Values.namespace }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: deployments-service-build-worker
+  template:
+    metadata:
+      labels:
+        app: deployments-service-build-worker
+    spec:
+      serviceAccountName: build-worker
+      containers:
+        - name: build-worker
+          image: {{ .Values.image.worker.repository }}:{{ .Values.image.worker.tag }}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:
+            - name: CELERY_QUEUE
+              value: build
+            - name: DEPLOY_REDIS__URL
+              valueFrom:
+                secretKeyRef:
+                  name: deployments-service-secret
+                  key: REDIS_URL
+            - name: DEPLOY_SERVER__BASE_URL
+              value: {{ .Values.server.baseUrl | quote }}
+            - name: DEPLOY_REGISTRY__URL
+              value: {{ .Values.registry.url | quote }}
+          resources:
+            {{- toYaml .Values.resources.worker | nindent 12 }}

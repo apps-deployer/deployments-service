@@ -3,6 +3,7 @@
 import asyncio
 import os
 from pathlib import Path
+from urllib.parse import quote
 
 import asyncpg
 
@@ -10,9 +11,11 @@ from src.config import load_settings
 
 
 async def run_migrations():
-    settings = load_settings()
-    db = settings.db
-    dsn = f"postgresql://{db.user}:{db.password}@{db.host}:{db.port}/{db.name}"
+    dsn = os.environ.get("DB_ADMIN_URL")
+    if not dsn:
+        settings = load_settings()
+        db = settings.db
+        dsn = f"postgresql://{quote(db.user, safe='')}:{quote(db.password, safe='')}@{db.host}:{db.port}/{db.name}"
 
     conn = await asyncpg.connect(dsn)
     try:

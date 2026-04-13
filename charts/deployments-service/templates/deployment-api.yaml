@@ -1,0 +1,73 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: deployments-service-api
+  namespace: {{ .Values.namespace }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: deployments-service-api
+  template:
+    metadata:
+      labels:
+        app: deployments-service-api
+    spec:
+      initContainers:
+        - name: migrator
+          image: {{ .Values.image.api.repository }}:{{ .Values.image.api.tag }}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command: ["python", "migrate.py"]
+          env:
+            - name: DB_ADMIN_URL
+              valueFrom:
+                secretKeyRef:
+                  name: deployments-service-secret
+                  key: DB_ADMIN_URL
+      containers:
+        - name: deployments-service-api
+          image: {{ .Values.image.api.repository }}:{{ .Values.image.api.tag }}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - containerPort: {{ .Values.server.port }}
+          env:
+            - name: DEPLOY_DB__HOST
+              value: {{ .Values.db.host | quote }}
+            - name: DEPLOY_DB__PORT
+              value: {{ .Values.db.port | quote }}
+            - name: DEPLOY_DB__USER
+              value: {{ .Values.db.user | quote }}
+            - name: DEPLOY_DB__NAME
+              value: {{ .Values.db.name | quote }}
+            - name: DEPLOY_DB__PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: deployments-service-secret
+                  key: DB_PASSWORD
+            - name: DEPLOY_REDIS__URL
+              valueFrom:
+                secretKeyRef:
+                  name: deployments-service-secret
+                  key: REDIS_URL
+            - name: DEPLOY_GRPC__PROJECTS_SERVICE_ADDR
+              value: {{ .Values.grpc.projectsServiceAddr | quote }}
+            - name: DEPLOY_SERVER__PORT
+              value: {{ .Values.server.port | quote }}
+            - name: DEPLOY_SERVER__BASE_URL
+              value: {{ .Values.server.baseUrl | quote }}
+            - name: DEPLOY_SERVER__FRONTEND_URL
+              value: {{ .Values.server.frontendUrl | quote }}
+            - name: DEPLOY_REGISTRY__URL
+              value: {{ .Values.registry.url | quote }}
+            - name: DEPLOY_AUTH__JWT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: deployments-service-secret
+                  key: JWT_SECRET
+            - name: DEPLOY_GITHUB__WEBHOOK_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: deployments-service-secret
+                  key: GH_WEBHOOK_SECRET
+          resources:
+            {{- toYaml .Values.resources.api | nindent 12 }}

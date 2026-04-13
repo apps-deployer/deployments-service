@@ -1,0 +1,58 @@
+image:
+  api:
+    repository: ""
+    tag: latest
+  worker:
+    repository: ""
+    tag: latest
+  pullPolicy: IfNotPresent
+
+namespace: apps-deployer
+
+db:
+  host: postgres-deployments-postgresql
+  port: 5432
+  user: deployments-service
+  name: deployments_db
+
+redis:
+  host: redis-master
+  port: 6379
+  db: 0
+
+grpc:
+  projectsServiceAddr: projects-service:50051
+
+server:
+  port: 8000
+  baseUrl: ""
+  frontendUrl: ""
+
+registry:
+  url: ""
+
+ingress:
+  host: ""
+
+secrets:
+  dbPassword: ""
+  dbAdminPassword: ""
+  jwtSecret: ""
+  redisPassword: ""
+  ghWebhookSecret: ""
+
+resources:
+  api:
+    requests:
+      memory: 128Mi
+      cpu: 100m
+    limits:
+      memory: 256Mi
+      cpu: 500m
+  worker:
+    requests:
+      memory: 256Mi
+      cpu: 200m
+    limits:
+      memory: 512Mi
+      cpu: 1000m
