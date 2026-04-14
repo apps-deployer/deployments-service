@@ -30,5 +30,7 @@ spec:
               value: {{ .Values.server.baseUrl | quote }}
             - name: DEPLOY_REGISTRY__URL
               value: {{ .Values.registry.url | quote }}
+            - name: K8S_NAMESPACE
+              value: {{ .Values.namespace | quote }}
           resources:
             {{- toYaml .Values.resources.worker | nindent 12 }}
