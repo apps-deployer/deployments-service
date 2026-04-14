@@ -28,5 +28,7 @@ spec:
                   key: REDIS_URL
             - name: DEPLOY_SERVER__BASE_URL
               value: {{ .Values.server.baseUrl | quote }}
+            - name: DEPLOY_DEPLOY__BASE_DOMAIN
+              value: {{ .Values.deploy.baseDomain | quote }}
           resources:
             {{- toYaml .Values.resources.worker | nindent 12 }}

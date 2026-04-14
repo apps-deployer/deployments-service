@@ -38,6 +38,10 @@ class RegistryConfig(BaseModel):
     url: str = "registry.localhost:5000"
 
 
+class DeployConfig(BaseModel):
+    base_domain: str = ""
+
+
 class AuthConfig(BaseModel):
     jwt_secret: str = "your_jwt_secret"
 
@@ -55,6 +59,7 @@ class Settings(BaseSettings):
     grpc: GrpcConfig = GrpcConfig()
     server: ServerConfig = ServerConfig()
     registry: RegistryConfig = RegistryConfig()
+    deploy: DeployConfig = DeployConfig()
     auth: AuthConfig = AuthConfig()
     github: GitHubWebhookConfig = GitHubWebhookConfig()
 

@@ -156,6 +156,9 @@ def run_deploy(
         app_name = f"{project_name}-{env_name}"
         namespace = project_name
 
+        if not domain_name and settings.deploy.base_domain:
+            domain_name = f"{app_name}.{settings.deploy.base_domain}"
+
         with tempfile.TemporaryDirectory() as tmpdir:
             dest = Path(tmpdir)
             manifest_path = _generate_manifests(
