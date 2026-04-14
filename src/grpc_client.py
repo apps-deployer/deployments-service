@@ -91,9 +91,16 @@ class ProjectsGrpcClient:
         self._token: str | None = None
 
     def with_token(self, token: str | None) -> "ProjectsGrpcClient":
-        """Return self with token set for subsequent calls."""
-        self._token = token
-        return self
+        """Return a new client sharing the same channel but with a different token."""
+        other = ProjectsGrpcClient.__new__(ProjectsGrpcClient)
+        other._channel = self._channel
+        other._projects = self._projects
+        other._envs = self._envs
+        other._deploy_configs = self._deploy_configs
+        other._vars = self._vars
+        other._frameworks = self._frameworks
+        other._token = token
+        return other
 
     def _metadata(self) -> list[tuple[str, str]] | None:
         if self._token:

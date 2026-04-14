@@ -133,15 +133,13 @@ class DeploymentService:
         if run is None or run.artifact is None:
             return
 
-        # Ensure service token for gRPC calls in internal/callback context
-        if not self.grpc._token:
-            from src.auth import generate_service_token
-            from src.main import settings
-            self.grpc.with_token(generate_service_token(settings.auth.jwt_secret))
+        from src.auth import generate_service_token
+        from src.main import settings
+        grpc = self.grpc.with_token(generate_service_token(settings.auth.jwt_secret))
 
-        project = await self.grpc.get_project(str(run.project_id))
-        env = await self.grpc.get_env(str(run.env_id))
-        resolved_vars = await self.grpc.resolve_vars(str(run.env_id))
+        project = await grpc.get_project(str(run.project_id))
+        env = await grpc.get_env(str(run.env_id))
+        resolved_vars = await grpc.resolve_vars(str(run.env_id))
 
         deploy_job = await self.repo.get_job_by_run_and_type(run_id, JobType.DEPLOY)
 

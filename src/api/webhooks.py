@@ -50,7 +50,7 @@ async def github_push(request: Request):
         raise HTTPException(status_code=400, detail="Missing repo URL or commit SHA")
 
     # Use service token for service-to-service gRPC calls
-    grpc.with_token(generate_service_token(settings.auth.jwt_secret))
+    grpc = grpc.with_token(generate_service_token(settings.auth.jwt_secret))
 
     async with factory() as session:
         svc = DeploymentService(session, grpc)
