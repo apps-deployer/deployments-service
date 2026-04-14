@@ -58,18 +58,26 @@ class DeploymentService:
 
         build_job = await self.repo.get_job_by_run_and_type(run.id, JobType.BUILD)
 
-        run_build.apply_async(
-            kwargs=dict(
-                deployment_run_id=str(run.id),
-                build_job_id=str(build_job.id),
-                repo_url=project.repo_url,
-                commit_sha=commit_sha,
-                deploy_config=dataclasses.asdict(deploy_config),
-                env_vars=[{"key": v.key, "value": v.value} for v in resolved_vars],
-                project_name=project.name,
-            ),
-            queue="build",
-        )
+        try:
+            run_build.apply_async(
+                kwargs=dict(
+                    deployment_run_id=str(run.id),
+                    build_job_id=str(build_job.id),
+                    repo_url=project.repo_url,
+                    commit_sha=commit_sha,
+                    deploy_config=dataclasses.asdict(deploy_config),
+                    env_vars=[{"key": v.key, "value": v.value} for v in resolved_vars],
+                    project_name=project.name,
+                ),
+                queue="build",
+            )
+        except Exception as exc:
+            await self.repo.update_job_status(build_job.id, RunStatus.FAILED, error=str(exc))
+            await self.repo.update_run_status(
+                run.id, RunStatus.FAILED, finished_at=datetime.now(UTC).replace(tzinfo=None)
+            )
+            await self.session.commit()
+            raise
 
         run = await self.repo.get_run(run.id)
         return run

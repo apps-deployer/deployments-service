@@ -16,7 +16,7 @@ db:
   name: deployments_db
 
 redis:
-  host: redis-master
+  host: celery-broker-redis-master
   port: 6379
   db: 0
 
