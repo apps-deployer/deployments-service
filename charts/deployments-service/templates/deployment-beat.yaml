@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: deployments-service-beat
+  namespace: {{ .Values.namespace }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: deployments-service-beat
+  template:
+    metadata:
+      labels:
+        app: deployments-service-beat
+    spec:
+      containers:
+        - name: beat
+          image: {{ .Values.image.worker.repository }}:{{ .Values.image.worker.tag }}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command: ["celery", "-A", "src.workers.celery_app", "beat", "-l", "info"]
+          env:
+            - name: DEPLOY_REDIS__URL
+              valueFrom:
+                secretKeyRef:
+                  name: deployments-service-secret
+                  key: REDIS_URL
+            - name: DEPLOY_SERVER__BASE_URL
+              value: {{ .Values.server.baseUrl | quote }}
+          resources:
+            requests:
+              memory: 64Mi
+              cpu: 50m
+            limits:
+              memory: 128Mi
+              cpu: 200m

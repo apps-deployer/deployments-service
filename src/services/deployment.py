@@ -128,6 +128,15 @@ class DeploymentService:
 
         await self.session.commit()
 
+    async def cleanup_stale_jobs(
+        self,
+        pending_timeout_minutes: int = 5,
+        running_timeout_minutes: int = 60,
+    ) -> int:
+        count = await self.repo.mark_stale_jobs(pending_timeout_minutes, running_timeout_minutes)
+        await self.session.commit()
+        return count
+
     async def create_artifact(self, run_id: uuid.UUID, image: str):
         run = await self.repo.get_run(run_id)
         if run is None:

@@ -1,7 +1,7 @@
 import uuid
-from datetime import datetime, UTC
+from datetime import datetime, UTC, timedelta
 
-from sqlalchemy import func, select
+from sqlalchemy import func, select, or_, and_
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import joinedload
 
@@ -129,6 +129,41 @@ class DeploymentRepository:
                 job.error = error
         await self.session.flush()
         return job
+
+    async def mark_stale_jobs(
+        self,
+        pending_timeout_minutes: int = 5,
+        running_timeout_minutes: int = 60,
+    ) -> int:
+        """Mark stale PENDING/RUNNING jobs as FAILED. Returns count of affected jobs."""
+        now = datetime.now(UTC).replace(tzinfo=None)
+        pending_cutoff = now - timedelta(minutes=pending_timeout_minutes)
+        running_cutoff = now - timedelta(minutes=running_timeout_minutes)
+
+        stmt = select(Job).where(
+            or_(
+                and_(Job.status == RunStatus.PENDING, Job.created_at < pending_cutoff),
+                and_(Job.status == RunStatus.RUNNING, Job.started_at < running_cutoff),
+            )
+        )
+        result = await self.session.execute(stmt)
+        stale_jobs = list(result.scalars().all())
+
+        affected_run_ids: set[uuid.UUID] = set()
+        for job in stale_jobs:
+            job.status = RunStatus.FAILED
+            job.error = "Timed out: worker crashed or task was never dispatched"
+            job.finished_at = now
+            affected_run_ids.add(job.deployment_run_id)
+
+        for run_id in affected_run_ids:
+            run = await self.session.get(DeploymentRun, run_id)
+            if run and run.status in (RunStatus.PENDING, RunStatus.RUNNING):
+                run.status = RunStatus.FAILED
+                run.finished_at = now
+
+        await self.session.flush()
+        return len(stale_jobs)
 
     async def create_artifact(
         self, run_id: uuid.UUID, image: str
