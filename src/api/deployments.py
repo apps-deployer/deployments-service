@@ -84,6 +84,15 @@ async def update_job_status(job_id: uuid.UUID, body: UpdateJobStatusRequest):
             raise HTTPException(status_code=404, detail="Job not found")
 
 
+@internal_router.post("/cleanup", status_code=200)
+async def cleanup_stale_jobs():
+    factory, grpc = _get_service()
+    async with factory() as session:
+        svc = DeploymentService(session, grpc)
+        count = await svc.cleanup_stale_jobs()
+        return {"cleaned": count}
+
+
 @internal_router.post(
     "/deployments/{run_id}/artifact", status_code=201
 )

@@ -150,9 +150,8 @@ def run_deploy(
     domain_name: str,
     env_vars: list[dict],
 ):
-    _callback(f"/internal/jobs/{deploy_job_id}/status", status="running")
-
     try:
+        _callback(f"/internal/jobs/{deploy_job_id}/status", status="running")
         app_name = f"{project_name}-{env_name}"
         namespace = project_name
 

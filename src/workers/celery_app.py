@@ -1,4 +1,5 @@
 from celery import Celery
+from celery.schedules import crontab
 
 from src.config import load_settings
 
@@ -15,5 +16,12 @@ celery.conf.update(
     task_routes={
         "src.workers.build.run_build": {"queue": "build"},
         "src.workers.deploy.run_deploy": {"queue": "deploy"},
+        "src.workers.cleanup.cleanup_stale_jobs": {"queue": "build"},
+    },
+    beat_schedule={
+        "cleanup-stale-jobs": {
+            "task": "src.workers.cleanup.cleanup_stale_jobs",
+            "schedule": crontab(minute="*/5"),
+        },
     },
 )

@@ -163,9 +163,8 @@ def run_build(
     env_vars: list[dict],
     project_name: str,
 ):
-    _callback(f"/internal/jobs/{build_job_id}/status", status="running")
-
     try:
+        _callback(f"/internal/jobs/{build_job_id}/status", status="running")
         _load_k8s()
 
         dockerfile = _generate_dockerfile(deploy_config)
