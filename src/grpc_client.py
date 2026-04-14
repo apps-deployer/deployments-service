@@ -127,12 +127,11 @@ class ProjectsGrpcClient:
         return [Project(id=p.id, name=p.name, repo_url=p.repo_url, owner_id=p.owner_id) for p in resp.projects]
 
     async def create_project(self, name: str, repo_url: str, deploy_config_template_id: str = "") -> Project:
+        req = projects_pb2.CreateProjectRequest(name=name, repo_url=repo_url)
+        if deploy_config_template_id:
+            req.deploy_config_template_id = deploy_config_template_id
         resp = await self._projects.CreateProject(
-            projects_pb2.CreateProjectRequest(
-                name=name,
-                repo_url=repo_url,
-                deploy_config_template_id=deploy_config_template_id,
-            ),
+            req,
             metadata=self._metadata(),
         )
         return Project(id=resp.id, name=resp.name, repo_url=resp.repo_url, owner_id=resp.owner_id)
