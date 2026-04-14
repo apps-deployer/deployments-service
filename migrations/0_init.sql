@@ -77,3 +77,7 @@ CREATE OR REPLACE TRIGGER trg_update_jobs
 BEFORE UPDATE ON deployment.jobs
 FOR EACH ROW
 EXECUTE FUNCTION utils.update_updated_at();
+
+GRANT USAGE ON SCHEMA deployment TO "deployments-service";
+GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA deployment TO "deployments-service";
+ALTER DEFAULT PRIVILEGES IN SCHEMA deployment GRANT SELECT, INSERT, UPDATE, DELETE ON TABLES TO "deployments-service";
