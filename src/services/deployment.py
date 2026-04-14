@@ -65,7 +65,7 @@ class DeploymentService:
                 repo_url=project.repo_url,
                 commit_sha=commit_sha,
                 deploy_config=dataclasses.asdict(deploy_config),
-                env_vars=[{"key": v.key, "value": v.value.decode()} for v in resolved_vars],
+                env_vars=[{"key": v.key, "value": v.value} for v in resolved_vars],
                 project_name=project.name,
             ),
             queue="build",
@@ -151,7 +151,7 @@ class DeploymentService:
                 project_name=project.name,
                 env_name=env.name,
                 domain_name=env.domain_name,
-                env_vars=[{"key": v.key, "value": v.value.decode()} for v in resolved_vars],
+                env_vars=[{"key": v.key, "value": v.value} for v in resolved_vars],
             ),
             queue="deploy",
         )

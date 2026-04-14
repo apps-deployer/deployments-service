@@ -65,7 +65,7 @@ class Var:
 class ResolvedVar:
     id: str
     key: str
-    value: bytes
+    value: str
 
 
 @dataclass
