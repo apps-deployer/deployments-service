@@ -28,7 +28,7 @@ def _get_service():
 @router.post("", response_model=DeploymentRunResponse, status_code=201)
 async def create_deployment(body: CreateDeploymentRequest, user: CurrentUser = Depends(get_current_user)):
     factory, grpc = _get_service()
-    grpc.with_token(user.token)
+    grpc = grpc.with_token(user.token)
     async with factory() as session:
         svc = DeploymentService(session, grpc)
         run = await svc.create_deployment(

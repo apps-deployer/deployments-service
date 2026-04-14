@@ -51,13 +51,27 @@ spec:
       targetPort: 8080
 """)
 
+_NAMESPACE_TEMPLATE = Template("""\
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: $namespace
+""")
+
 _INGRESS_TEMPLATE = Template("""\
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: $app_name
   namespace: $namespace
+  annotations:
+    cert-manager.io/cluster-issuer: yc-clusterissuer
 spec:
+  ingressClassName: traefik
+  tls:
+    - hosts:
+        - $domain
+      secretName: $app_name-tls
   rules:
     - host: $domain
       http:
@@ -106,6 +120,7 @@ def _generate_manifests(
     )
 
     manifests = [
+        _NAMESPACE_TEMPLATE.substitute(ctx),
         _DEPLOYMENT_TEMPLATE.substitute(ctx),
         _SERVICE_TEMPLATE.substitute(ctx),
     ]

@@ -5,7 +5,6 @@ WORKDIR /app
 # Install system dependencies: git for cloning, docker CLI, curl for kubectl
 RUN apt-get update && apt-get install -y --no-install-recommends \
     git \
-    docker.io \
     curl \
     ca-certificates \
     && rm -rf /var/lib/apt/lists/*
