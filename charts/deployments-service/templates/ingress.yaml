@@ -5,13 +5,13 @@ metadata:
   name: deployments-service
   namespace: {{ .Values.namespace }}
   annotations:
-    traefik.ingress.kubernetes.io/router.tls: "true"
-    traefik.ingress.kubernetes.io/router.tls.certresolver: letsencrypt
+    cert-manager.io/cluster-issuer: yc-clusterissuer
 spec:
   ingressClassName: traefik
   tls:
     - hosts:
         - {{ .Values.ingress.host }}
+      secretName: deployments-service-tls
   rules:
     - host: {{ .Values.ingress.host }}
       http:
