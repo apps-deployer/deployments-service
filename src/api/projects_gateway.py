@@ -134,7 +134,6 @@ async def create_env(
             name=body.name,
             project_id=project_id,
             target_branch=body.target_branch,
-            domain_name=body.domain_name,
         )
     except Exception as e:
         if hasattr(e, "code"):
@@ -149,7 +148,7 @@ async def update_env(
 ):
     grpc = _get_grpc().with_token(user.token)
     try:
-        await grpc.update_env(env_id, name=body.name, target_branch=body.target_branch, domain_name=body.domain_name)
+        await grpc.update_env(env_id, name=body.name, target_branch=body.target_branch)
     except Exception as e:
         if hasattr(e, "code"):
             _grpc_error_to_http(e)

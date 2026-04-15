@@ -44,13 +44,11 @@ class EnvsListResponse(BaseModel):
 class CreateEnvRequest(BaseModel):
     name: str
     target_branch: str
-    domain_name: str = ""
 
 
 class UpdateEnvRequest(BaseModel):
     name: str
     target_branch: str
-    domain_name: str = ""
 
 
 class VarResponse(BaseModel):
