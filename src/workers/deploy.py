@@ -141,6 +141,18 @@ def _sanitize_name(name: str) -> str:
     return name[:63]
 
 
+def _decode_display_domain(domain: str) -> str:
+    """Decode punycode labels (xn--...) to unicode for human-readable URLs."""
+    import encodings.idna
+    parts = []
+    for label in domain.split("."):
+        try:
+            parts.append(encodings.idna.ToUnicode(label))
+        except Exception:
+            parts.append(label)
+    return ".".join(parts)
+
+
 def _env_namespace(project_name: str, env_name: str, project_id: str) -> str:
     """Unique namespace per environment: <project>-<env>-<8hex of project_id>."""
     short_id = project_id.replace("-", "")[:8]
@@ -192,7 +204,8 @@ def run_deploy(
             _kubectl_apply(manifest_path)
 
         if domain_name:
-            url = domain_name if domain_name.startswith("http") else f"https://{domain_name}"
+            display_domain = _decode_display_domain(domain_name)
+            url = display_domain if display_domain.startswith("http") else f"https://{display_domain}"
             httpx.patch(
                 f"{settings.server.base_url}/internal/deployments/{deployment_run_id}/artifact",
                 json={"url": url},
