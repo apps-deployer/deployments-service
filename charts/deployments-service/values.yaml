@@ -30,6 +30,7 @@ server:
 
 registry:
   url: ""
+  userAppsUrl: ""
 
 deploy:
   baseDomain: ""

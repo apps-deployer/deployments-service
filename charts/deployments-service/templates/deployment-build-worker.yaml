@@ -30,6 +30,8 @@ spec:
               value: {{ .Values.server.baseUrl | quote }}
             - name: DEPLOY_REGISTRY__URL
               value: {{ .Values.registry.url | quote }}
+            - name: DEPLOY_REGISTRY__USER_APPS_URL
+              value: {{ .Values.registry.userAppsUrl | quote }}
             - name: K8S_NAMESPACE
               value: {{ .Values.namespace | quote }}
           resources:

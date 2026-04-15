@@ -36,6 +36,7 @@ class ServerConfig(BaseModel):
 
 class RegistryConfig(BaseModel):
     url: str = "registry.localhost:5000"
+    user_apps_url: str = ""
 
 
 class DeployConfig(BaseModel):
