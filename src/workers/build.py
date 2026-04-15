@@ -46,15 +46,21 @@ def _generate_dockerfile(deploy_config: dict) -> str:
     if build_cmd:
         lines.append(f"RUN {build_cmd}")
 
-    second_stage = base_image if run_cmd else "nginx:alpine"
-    lines.append(f"FROM {second_stage}")
-    lines.append("WORKDIR /app")
-    if output_dir and output_dir != ".":
-        lines.append(f"COPY --from=build /app/{output_dir} .")
-    else:
-        lines.append("COPY --from=build /app .")
     if run_cmd:
+        # Server app: second stage needs full /app (node_modules, compiled output, etc.)
+        second_stage = base_image
+        lines.append(f"FROM {second_stage}")
+        lines.append("WORKDIR /app")
+        lines.append("COPY --from=build /app .")
         lines.append(f"CMD {run_cmd}")
+    else:
+        # Static site: serve only the built output via nginx
+        lines.append("FROM nginx:alpine")
+        lines.append("WORKDIR /usr/share/nginx/html")
+        if output_dir and output_dir != ".":
+            lines.append(f"COPY --from=build /app/{output_dir} .")
+        else:
+            lines.append("COPY --from=build /app .")
 
     return "\n".join(lines) + "\n"
 

@@ -67,6 +67,7 @@ class Artifact(Base):
         index=True,
     )
     image: Mapped[str] = mapped_column(nullable=False)
+    url: Mapped[str | None]
     created_at: Mapped[datetime] = mapped_column(server_default=text("now()"))
 
     deployment_run: Mapped["DeploymentRun"] = relationship(back_populates="artifact")

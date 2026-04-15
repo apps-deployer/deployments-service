@@ -145,6 +145,14 @@ class DeploymentService:
         await self.session.commit()
         return artifact
 
+    async def update_artifact_url(self, run_id: uuid.UUID, url: str):
+        run = await self.repo.get_run(run_id)
+        if run is None:
+            raise NotFoundError(f"Deployment run {run_id} not found")
+        artifact = await self.repo.update_artifact_url(run_id, url)
+        await self.session.commit()
+        return artifact
+
     async def _dispatch_deploy(self, run_id: uuid.UUID):
         run = await self.repo.get_run(run_id)
         if run is None or run.artifact is None:
@@ -170,6 +178,7 @@ class DeploymentService:
                     env_name=env.name,
                     domain_name=env.domain_name,
                     env_vars=[{"key": v.key, "value": v.value} for v in resolved_vars],
+                    project_id=str(run.project_id),
                 ),
                 queue="deploy",
             )

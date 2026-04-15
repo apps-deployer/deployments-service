@@ -141,9 +141,14 @@ class CreateDeploymentRequest(BaseModel):
 class ArtifactResponse(BaseModel):
     id: uuid.UUID
     image: str
+    url: str | None = None
     created_at: datetime
 
     model_config = {"from_attributes": True}
+
+
+class UpdateArtifactRequest(BaseModel):
+    url: str
 
 
 class JobResponse(BaseModel):

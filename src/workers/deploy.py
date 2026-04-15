@@ -141,6 +141,13 @@ def _sanitize_name(name: str) -> str:
     return name[:63]
 
 
+def _env_namespace(project_name: str, env_name: str, project_id: str) -> str:
+    """Unique namespace per environment: <project>-<env>-<8hex of project_id>."""
+    short_id = project_id.replace("-", "")[:8]
+    raw = f"{project_name[:20]}-{env_name[:20]}-{short_id}"
+    return _sanitize_name(raw)
+
+
 def _kubectl_apply(manifest_path: Path):
     result = subprocess.run(
         ["kubectl", "apply", "-f", str(manifest_path)],
@@ -162,11 +169,12 @@ def run_deploy(
     env_name: str,
     domain_name: str,
     env_vars: list[dict],
+    project_id: str = "",
 ):
     try:
         _callback(f"/internal/jobs/{deploy_job_id}/status", status="running")
         app_name = _sanitize_name(f"{project_name}-{env_name}")
-        namespace = _sanitize_name(project_name)
+        namespace = _env_namespace(project_name, env_name, project_id) if project_id else _sanitize_name(project_name)
 
         if not domain_name and settings.deploy.base_domain:
             domain_name = f"{app_name}.{settings.deploy.base_domain}"
@@ -182,6 +190,13 @@ def run_deploy(
                 dest=dest,
             )
             _kubectl_apply(manifest_path)
+
+        if domain_name:
+            url = domain_name if domain_name.startswith("http") else f"https://{domain_name}"
+            httpx.patch(
+                f"{settings.server.base_url}/internal/deployments/{deployment_run_id}/artifact",
+                json={"url": url},
+            ).raise_for_status()
 
         _callback(f"/internal/jobs/{deploy_job_id}/status", status="success")
 
