@@ -9,6 +9,7 @@ from src.schemas import (
     DeploymentRunListResponse,
     DeploymentRunResponse,
     TriggerType,
+    UpdateArtifactRequest,
     UpdateJobStatusRequest,
 )
 from src.services.deployment import DeploymentService, NotFoundError
@@ -102,5 +103,16 @@ async def create_artifact(run_id: uuid.UUID, body: CreateArtifactRequest):
         svc = DeploymentService(session, grpc)
         try:
             await svc.create_artifact(run_id, body.image)
+        except NotFoundError:
+            raise HTTPException(status_code=404, detail="Deployment run not found")
+
+
+@internal_router.patch("/deployments/{run_id}/artifact", status_code=204)
+async def update_artifact_url(run_id: uuid.UUID, body: UpdateArtifactRequest):
+    factory, grpc = _get_service()
+    async with factory() as session:
+        svc = DeploymentService(session, grpc)
+        try:
+            await svc.update_artifact_url(run_id, body.url)
         except NotFoundError:
             raise HTTPException(status_code=404, detail="Deployment run not found")

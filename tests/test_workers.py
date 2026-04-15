@@ -89,6 +89,26 @@ def test_generate_dockerfile_with_run_cmd():
     assert df.count("FROM python:3.12-alpine") == 2
 
 
+def test_generate_dockerfile_nodejs_run_cmd_copies_full_app():
+    # Node.js template: output_dir=dist, run_cmd set — second stage must copy full /app
+    cfg = {
+        "base_image": "node:20-alpine",
+        "root_dir": ".",
+        "output_dir": "dist",
+        "install_cmd": "npm install",
+        "build_cmd": "npm run build",
+        "run_cmd": "node dist/index.js",
+    }
+    df = _generate_dockerfile(cfg)
+    assert "FROM node:20-alpine AS build" in df
+    assert "COPY --from=build /app ." in df
+    assert "CMD node dist/index.js" in df
+    # must NOT use nginx
+    assert "nginx" not in df
+    # must NOT copy only the dist subfolder
+    assert "COPY --from=build /app/dist" not in df
+
+
 def test_generate_dockerfile_static_uses_nginx():
     cfg = {
         "base_image": "node:20-alpine",
@@ -102,6 +122,7 @@ def test_generate_dockerfile_static_uses_nginx():
     assert "FROM node:20-alpine AS build" in df
     assert "FROM nginx:alpine" in df
     assert "COPY --from=build /app/dist ." in df
+    assert "WORKDIR /usr/share/nginx/html" in df
 
 
 def test_generate_dockerfile_no_build_cmd():

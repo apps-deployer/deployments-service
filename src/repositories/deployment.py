@@ -172,3 +172,13 @@ class DeploymentRepository:
         self.session.add(artifact)
         await self.session.flush()
         return artifact
+
+    async def update_artifact_url(self, run_id: uuid.UUID, url: str) -> Artifact | None:
+        stmt = select(Artifact).where(Artifact.deployment_run_id == run_id)
+        result = await self.session.execute(stmt)
+        artifact = result.scalar_one_or_none()
+        if artifact is None:
+            return None
+        artifact.url = url
+        await self.session.flush()
+        return artifact
