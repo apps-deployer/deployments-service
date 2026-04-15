@@ -46,6 +46,17 @@ jobs:
       - name: Install helm
         uses: azure/setup-helm@v4
 
+      - name: Create registry-credentials secret
+        env:
+          REGISTRY_PUSHER_KEY: ${{ secrets.REGISTRY_PUSHER_KEY }}
+        run: |
+          kubectl create secret docker-registry registry-credentials \
+            --docker-server=cr.yandex \
+            --docker-username=json_key \
+            --docker-password="$REGISTRY_PUSHER_KEY" \
+            --namespace=apps-deployer \
+            --dry-run=client -o yaml | kubectl apply -f -
+
       - name: Deploy
         run: |
           helm upgrade --install deployments-service ./charts/deployments-service \
