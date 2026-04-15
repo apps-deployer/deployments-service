@@ -27,7 +27,6 @@ class Env:
     name: str
     project_id: str
     target_branch: str
-    domain_name: str
 
 
 @dataclass
@@ -156,7 +155,7 @@ class ProjectsGrpcClient:
             metadata=self._metadata(),
         )
         return Env(id=resp.id, name=resp.name, project_id=resp.project_id,
-                   target_branch=resp.target_branch, domain_name=resp.domain_name)
+                   target_branch=resp.target_branch)
 
     async def get_env_by_git(self, repo_url: str, target_branch: str) -> Env:
         resp = await self._envs.GetEnvByGit(
@@ -164,7 +163,7 @@ class ProjectsGrpcClient:
             metadata=self._metadata(),
         )
         return Env(id=resp.id, name=resp.name, project_id=resp.project_id,
-                   target_branch=resp.target_branch, domain_name=resp.domain_name)
+                   target_branch=resp.target_branch)
 
     async def list_envs(self, project_id: str, limit: int = 100, offset: int = 0) -> list[Env]:
         resp = await self._envs.ListEnvs(
@@ -172,22 +171,19 @@ class ProjectsGrpcClient:
             metadata=self._metadata(),
         )
         return [Env(id=e.id, name=e.name, project_id=e.project_id,
-                    target_branch=e.target_branch, domain_name=e.domain_name) for e in resp.envs]
+                    target_branch=e.target_branch) for e in resp.envs]
 
-    async def create_env(self, name: str, project_id: str, target_branch: str, domain_name: str = "") -> Env:
+    async def create_env(self, name: str, project_id: str, target_branch: str) -> Env:
         resp = await self._envs.CreateEnv(
-            envs_pb2.CreateEnvRequest(
-                name=name, project_id=project_id,
-                target_branch=target_branch, domain_name=domain_name,
-            ),
+            envs_pb2.CreateEnvRequest(name=name, project_id=project_id, target_branch=target_branch),
             metadata=self._metadata(),
         )
         return Env(id=resp.id, name=resp.name, project_id=resp.project_id,
-                   target_branch=resp.target_branch, domain_name=resp.domain_name)
+                   target_branch=resp.target_branch)
 
-    async def update_env(self, env_id: str, name: str, target_branch: str, domain_name: str = "") -> None:
+    async def update_env(self, env_id: str, name: str, target_branch: str) -> None:
         await self._envs.UpdateEnv(
-            envs_pb2.UpdateEnvRequest(id=env_id, name=name, target_branch=target_branch, domain_name=domain_name),
+            envs_pb2.UpdateEnvRequest(id=env_id, name=name, target_branch=target_branch),
             metadata=self._metadata(),
         )
 

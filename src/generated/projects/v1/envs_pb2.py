@@ -26,7 +26,7 @@ from google.protobuf import empty_pb2 as google_dot_protobuf_dot_empty__pb2
 from google.protobuf import timestamp_pb2 as google_dot_protobuf_dot_timestamp__pb2
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x16projects/v1/envs.proto\x12\x0bprojects.v1\x1a\x1bgoogle/protobuf/empty.proto\x1a\x1fgoogle/protobuf/timestamp.proto\"\xc7\x01\n\x0b\x45nvResponse\x12\n\n\x02id\x18\x01 \x01(\t\x12\x0c\n\x04name\x18\x02 \x01(\t\x12\x12\n\nproject_id\x18\x03 \x01(\t\x12\x15\n\rtarget_branch\x18\x04 \x01(\t\x12\x13\n\x0b\x64omain_name\x18\x05 \x01(\t\x12.\n\ncreated_at\x18\x06 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12.\n\nupdated_at\x18\x07 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\":\n\x10ListEnvsResponse\x12&\n\x04\x65nvs\x18\x01 \x03(\x0b\x32\x18.projects.v1.EnvResponse\"\x1b\n\rGetEnvRequest\x12\n\n\x02id\x18\x01 \x01(\t\"=\n\x12GetEnvByGitRequest\x12\x10\n\x08repo_url\x18\x01 \x01(\t\x12\x15\n\rtarget_branch\x18\x02 \x01(\t\"D\n\x0fListEnvsRequest\x12\x12\n\nproject_id\x18\x01 \x01(\t\x12\r\n\x05limit\x18\x02 \x01(\x03\x12\x0e\n\x06offset\x18\x03 \x01(\x03\"`\n\x10\x43reateEnvRequest\x12\x0c\n\x04name\x18\x01 \x01(\t\x12\x12\n\nproject_id\x18\x02 \x01(\t\x12\x15\n\rtarget_branch\x18\x03 \x01(\t\x12\x13\n\x0b\x64omain_name\x18\x04 \x01(\t\"X\n\x10UpdateEnvRequest\x12\n\n\x02id\x18\x01 \x01(\t\x12\x0c\n\x04name\x18\x02 \x01(\t\x12\x15\n\rtarget_branch\x18\x03 \x01(\t\x12\x13\n\x0b\x64omain_name\x18\x04 \x01(\t\"\x1e\n\x10\x44\x65leteEnvRequest\x12\n\n\x02id\x18\x01 \x01(\t2\xad\x03\n\nEnvService\x12H\n\x0bGetEnvByGit\x12\x1f.projects.v1.GetEnvByGitRequest\x1a\x18.projects.v1.EnvResponse\x12>\n\x06GetEnv\x12\x1a.projects.v1.GetEnvRequest\x1a\x18.projects.v1.EnvResponse\x12G\n\x08ListEnvs\x12\x1c.projects.v1.ListEnvsRequest\x1a\x1d.projects.v1.ListEnvsResponse\x12\x44\n\tCreateEnv\x12\x1d.projects.v1.CreateEnvRequest\x1a\x18.projects.v1.EnvResponse\x12\x42\n\tUpdateEnv\x12\x1d.projects.v1.UpdateEnvRequest\x1a\x16.google.protobuf.Empty\x12\x42\n\tDeleteEnv\x12\x1d.projects.v1.DeleteEnvRequest\x1a\x16.google.protobuf.EmptyB?Z=github.com/apps-deployer/protos/gen/go/projects/v1;projectsv1b\x08\x65\x64itionsp\xe9\x07')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x16projects/v1/envs.proto\x12\x0bprojects.v1\x1a\x1bgoogle/protobuf/empty.proto\x1a\x1fgoogle/protobuf/timestamp.proto\"\xb2\x01\n\x0b\x45nvResponse\x12\n\n\x02id\x18\x01 \x01(\t\x12\x0c\n\x04name\x18\x02 \x01(\t\x12\x12\n\nproject_id\x18\x03 \x01(\t\x12\x15\n\rtarget_branch\x18\x04 \x01(\t\x12.\n\ncreated_at\x18\x06 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12.\n\nupdated_at\x18\x07 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\":\n\x10ListEnvsResponse\x12&\n\x04\x65nvs\x18\x01 \x03(\x0b\x32\x18.projects.v1.EnvResponse\"\x1b\n\rGetEnvRequest\x12\n\n\x02id\x18\x01 \x01(\t\"=\n\x12GetEnvByGitRequest\x12\x10\n\x08repo_url\x18\x01 \x01(\t\x12\x15\n\rtarget_branch\x18\x02 \x01(\t\"D\n\x0fListEnvsRequest\x12\x12\n\nproject_id\x18\x01 \x01(\t\x12\r\n\x05limit\x18\x02 \x01(\x03\x12\x0e\n\x06offset\x18\x03 \x01(\x03\"K\n\x10\x43reateEnvRequest\x12\x0c\n\x04name\x18\x01 \x01(\t\x12\x12\n\nproject_id\x18\x02 \x01(\t\x12\x15\n\rtarget_branch\x18\x03 \x01(\t\"C\n\x10UpdateEnvRequest\x12\n\n\x02id\x18\x01 \x01(\t\x12\x0c\n\x04name\x18\x02 \x01(\t\x12\x15\n\rtarget_branch\x18\x03 \x01(\t\"\x1e\n\x10\x44\x65leteEnvRequest\x12\n\n\x02id\x18\x01 \x01(\t2\xad\x03\n\nEnvService\x12H\n\x0bGetEnvByGit\x12\x1f.projects.v1.GetEnvByGitRequest\x1a\x18.projects.v1.EnvResponse\x12>\n\x06GetEnv\x12\x1a.projects.v1.GetEnvRequest\x1a\x18.projects.v1.EnvResponse\x12G\n\x08ListEnvs\x12\x1c.projects.v1.ListEnvsRequest\x1a\x1d.projects.v1.ListEnvsResponse\x12\x44\n\tCreateEnv\x12\x1d.projects.v1.CreateEnvRequest\x1a\x18.projects.v1.EnvResponse\x12\x42\n\tUpdateEnv\x12\x1d.projects.v1.UpdateEnvRequest\x1a\x16.google.protobuf.Empty\x12\x42\n\tDeleteEnv\x12\x1d.projects.v1.DeleteEnvRequest\x1a\x16.google.protobuf.EmptyB?Z=github.com/apps-deployer/protos/gen/go/projects/v1;projectsv1b\x08\x65\x64itionsp\xe9\x07')
 
 _globals = globals()
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, _globals)
@@ -35,21 +35,21 @@ if not _descriptor._USE_C_DESCRIPTORS:
   _globals['DESCRIPTOR']._loaded_options = None
   _globals['DESCRIPTOR']._serialized_options = b'Z=github.com/apps-deployer/protos/gen/go/projects/v1;projectsv1'
   _globals['_ENVRESPONSE']._serialized_start=102
-  _globals['_ENVRESPONSE']._serialized_end=301
-  _globals['_LISTENVSRESPONSE']._serialized_start=303
-  _globals['_LISTENVSRESPONSE']._serialized_end=361
-  _globals['_GETENVREQUEST']._serialized_start=363
-  _globals['_GETENVREQUEST']._serialized_end=390
-  _globals['_GETENVBYGITREQUEST']._serialized_start=392
-  _globals['_GETENVBYGITREQUEST']._serialized_end=453
-  _globals['_LISTENVSREQUEST']._serialized_start=455
-  _globals['_LISTENVSREQUEST']._serialized_end=523
-  _globals['_CREATEENVREQUEST']._serialized_start=525
-  _globals['_CREATEENVREQUEST']._serialized_end=621
-  _globals['_UPDATEENVREQUEST']._serialized_start=623
-  _globals['_UPDATEENVREQUEST']._serialized_end=711
-  _globals['_DELETEENVREQUEST']._serialized_start=713
-  _globals['_DELETEENVREQUEST']._serialized_end=743
-  _globals['_ENVSERVICE']._serialized_start=746
-  _globals['_ENVSERVICE']._serialized_end=1175
+  _globals['_ENVRESPONSE']._serialized_end=280
+  _globals['_LISTENVSRESPONSE']._serialized_start=282
+  _globals['_LISTENVSRESPONSE']._serialized_end=340
+  _globals['_GETENVREQUEST']._serialized_start=342
+  _globals['_GETENVREQUEST']._serialized_end=369
+  _globals['_GETENVBYGITREQUEST']._serialized_start=371
+  _globals['_GETENVBYGITREQUEST']._serialized_end=432
+  _globals['_LISTENVSREQUEST']._serialized_start=434
+  _globals['_LISTENVSREQUEST']._serialized_end=502
+  _globals['_CREATEENVREQUEST']._serialized_start=504
+  _globals['_CREATEENVREQUEST']._serialized_end=579
+  _globals['_UPDATEENVREQUEST']._serialized_start=581
+  _globals['_UPDATEENVREQUEST']._serialized_end=648
+  _globals['_DELETEENVREQUEST']._serialized_start=650
+  _globals['_DELETEENVREQUEST']._serialized_end=680
+  _globals['_ENVSERVICE']._serialized_start=683
+  _globals['_ENVSERVICE']._serialized_end=1112
 # @@protoc_insertion_point(module_scope)
