@@ -2,7 +2,7 @@
 import pytest
 
 from src.workers.deploy import _sanitize_name, _render_env_block
-from src.workers.build import _generate_dockerfile
+from src.workers.build import _generate_dockerfile, _job_name
 
 
 # ── _sanitize_name ────────────────────────────────────────────────────────────
@@ -31,6 +31,23 @@ def test_sanitize_name_truncates_at_63():
 
 def test_sanitize_name_combined():
     assert _sanitize_name("My Project-ENV") == "my-project-env"
+
+
+# ── _job_name ─────────────────────────────────────────────────────────────────
+
+def test_job_name_no_trailing_dash():
+    # UUID position 24 falls on a dash — result must not end with one
+    job_id = "019d925e-f5c9-7d42-9e58-84dee211a1d6"
+    name = _job_name(job_id)
+    assert not name.endswith("-")
+    assert name.startswith("kaniko-")
+
+
+def test_job_name_only_alphanumeric_and_dash():
+    import re
+    job_id = "019d925e-f5c9-7d42-9e58-84dee211a1d6"
+    name = _job_name(job_id)
+    assert re.match(r'^[a-z0-9][a-z0-9-]*[a-z0-9]$', name)
 
 
 # ── _render_env_block ─────────────────────────────────────────────────────────
