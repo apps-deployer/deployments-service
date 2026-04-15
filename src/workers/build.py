@@ -60,7 +60,8 @@ def _generate_dockerfile(deploy_config: dict) -> str:
 
 
 def _job_name(build_job_id: str) -> str:
-    return f"kaniko-{build_job_id[:24]}"
+    hex_id = build_job_id.replace("-", "")[:24]
+    return f"kaniko-{hex_id}"
 
 
 def _create_kaniko_job(
