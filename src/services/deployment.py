@@ -176,7 +176,6 @@ class DeploymentService:
                     image=run.artifact.image,
                     project_name=project.name,
                     env_name=env.name,
-                    domain_name=env.domain_name,
                     env_vars=[{"key": v.key, "value": v.value} for v in resolved_vars],
                     project_id=str(run.project_id),
                 ),

@@ -35,7 +35,6 @@ class EnvResponse(BaseModel):
     name: str
     project_id: str
     target_branch: str
-    domain_name: str
 
 
 class EnvsListResponse(BaseModel):

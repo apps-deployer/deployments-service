@@ -76,7 +76,7 @@ def mock_grpc():
     ))
     grpc.get_env = AsyncMock(return_value=Env(
         id=str(uuid.uuid4()), name="production", project_id=str(uuid.uuid4()),
-        target_branch="main", domain_name="app.example.com",
+        target_branch="main",
     ))
     grpc.resolve_deploy_config = AsyncMock(return_value=DeployConfig(
         id=str(uuid.uuid4()), project_id=str(uuid.uuid4()),

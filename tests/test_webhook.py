@@ -70,7 +70,7 @@ async def test_valid_signature_accepted(client):
     body = json.dumps(payload).encode()
 
     env = Env(id=str(uuid.uuid4()), name="production", project_id=str(uuid.uuid4()),
-               target_branch="main", domain_name="")
+               target_branch="main")
 
     with patch("src.main.grpc_client") as mock_grpc, \
          patch("src.main.session_factory") as mock_factory, \

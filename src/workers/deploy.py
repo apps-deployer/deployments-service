@@ -179,17 +179,16 @@ def run_deploy(
     image: str,
     project_name: str,
     env_name: str,
-    domain_name: str,
     env_vars: list[dict],
     project_id: str = "",
 ):
     try:
         _callback(f"/internal/jobs/{deploy_job_id}/status", status="running")
-        app_name = _sanitize_name(f"{project_name}-{env_name}")
+        short_id = project_id.replace("-", "")[:8] if project_id else ""
+        app_name = _sanitize_name(f"{project_name}-{env_name}-{short_id}" if short_id else f"{project_name}-{env_name}")
         namespace = _env_namespace(project_name, env_name, project_id) if project_id else _sanitize_name(project_name)
 
-        if not domain_name and settings.deploy.base_domain:
-            domain_name = f"{app_name}.{settings.deploy.base_domain}"
+        domain_name = f"{app_name}.{settings.deploy.base_domain}" if settings.deploy.base_domain else ""
 
         with tempfile.TemporaryDirectory() as tmpdir:
             dest = Path(tmpdir)
