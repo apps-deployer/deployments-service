@@ -48,12 +48,12 @@ jobs:
 
       - name: Create registry-credentials secret
         env:
-          YC_SA_KEY: ${{ secrets.YC_SA_KEY }}
+          REGISTRY_PUSHER_KEY: ${{ secrets.REGISTRY_PUSHER_KEY }}
         run: |
           kubectl create secret docker-registry registry-credentials \
             --docker-server=cr.yandex \
             --docker-username=json_key \
-            --docker-password="$YC_SA_KEY" \
+            --docker-password="$REGISTRY_PUSHER_KEY" \
             --namespace=apps-deployer \
             --dry-run=client -o yaml | kubectl apply -f -
 
