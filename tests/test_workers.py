@@ -1,7 +1,7 @@
 """Tests for worker utility functions."""
 import pytest
 
-from src.workers.deploy import _sanitize_name, _render_env_block
+from src.workers.deploy import _sanitize_name, _render_env_block, _decode_display_domain
 from src.workers.build import _generate_dockerfile, _job_name
 
 
@@ -31,6 +31,21 @@ def test_sanitize_name_truncates_at_63():
 
 def test_sanitize_name_combined():
     assert _sanitize_name("My Project-ENV") == "my-project-env"
+
+
+# ── _decode_display_domain ────────────────────────────────────────────────────
+
+def test_decode_display_domain_punycode():
+    assert _decode_display_domain("apps.xn--d1acmhpe.tech") == "apps.деплой.tech"
+
+
+def test_decode_display_domain_plain_ascii():
+    assert _decode_display_domain("apps.example.com") == "apps.example.com"
+
+
+def test_decode_display_domain_mixed():
+    # subdomain is plain, tld label is punycode
+    assert _decode_display_domain("node-hello-prod.apps.xn--d1acmhpe.tech") == "node-hello-prod.apps.деплой.tech"
 
 
 # ── _job_name ─────────────────────────────────────────────────────────────────
