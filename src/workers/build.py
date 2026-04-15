@@ -177,11 +177,11 @@ def run_build(
         if not _wait_for_job(job_name):
             raise RuntimeError(f"Kaniko job {job_name} failed")
 
-        _callback(f"/internal/jobs/{build_job_id}/status", status="success")
         httpx.post(
             f"{settings.server.base_url}/internal/deployments/{deployment_run_id}/artifact",
             json={"image": image_tag},
         ).raise_for_status()
+        _callback(f"/internal/jobs/{build_job_id}/status", status="success")
 
     except Exception as exc:
         logger.exception("Build failed for run %s", deployment_run_id)

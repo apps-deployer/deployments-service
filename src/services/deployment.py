@@ -160,18 +160,26 @@ class DeploymentService:
 
         deploy_job = await self.repo.get_job_by_run_and_type(run_id, JobType.DEPLOY)
 
-        run_deploy.apply_async(
-            kwargs=dict(
-                deployment_run_id=str(run_id),
-                deploy_job_id=str(deploy_job.id),
-                image=run.artifact.image,
-                project_name=project.name,
-                env_name=env.name,
-                domain_name=env.domain_name,
-                env_vars=[{"key": v.key, "value": v.value} for v in resolved_vars],
-            ),
-            queue="deploy",
-        )
+        try:
+            run_deploy.apply_async(
+                kwargs=dict(
+                    deployment_run_id=str(run_id),
+                    deploy_job_id=str(deploy_job.id),
+                    image=run.artifact.image,
+                    project_name=project.name,
+                    env_name=env.name,
+                    domain_name=env.domain_name,
+                    env_vars=[{"key": v.key, "value": v.value} for v in resolved_vars],
+                ),
+                queue="deploy",
+            )
+        except Exception as exc:
+            import logging
+            logging.getLogger(__name__).error("Failed to enqueue deploy task for run %s: %s", run_id, exc)
+            await self.repo.update_job_status(deploy_job.id, RunStatus.FAILED, error=str(exc))
+            await self.repo.update_run_status(
+                run_id, RunStatus.FAILED, finished_at=datetime.now(UTC).replace(tzinfo=None)
+            )
 
 
 def _resolve_head(repo_url: str, branch: str) -> str:
