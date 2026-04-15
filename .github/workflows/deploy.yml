@@ -73,6 +73,7 @@ jobs:
             --set server.baseUrl="${{ vars.DEPLOYMENTS_BASE_URL }}" \
             --set server.frontendUrl="${{ vars.FRONTEND_URL }}" \
             --set registry.url="${{ vars.REGISTRY_ENDPOINT }}" \
+            --set registry.userAppsUrl="${{ vars.USER_APPS_REGISTRY_ENDPOINT }}" \
             --set deploy.baseDomain="${{ vars.APP_BASE_DOMAIN }}" \
             --set ingress.host="${{ vars.DEPLOYMENTS_HOST }}" \
             --wait --timeout 120s

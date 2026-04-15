@@ -170,7 +170,8 @@ def run_build(
 
         dockerfile = _generate_dockerfile(deploy_config)
         dockerfile_b64 = base64.b64encode(dockerfile.encode()).decode()
-        image_tag = f"{settings.registry.url}/{project_name}:{commit_sha[:12]}"
+        registry = settings.registry.user_apps_url or settings.registry.url
+        image_tag = f"{registry}/{project_name}:{commit_sha[:12]}"
         job_name = _job_name(build_job_id)
 
         _create_kaniko_job(job_name, repo_url, commit_sha, image_tag, dockerfile_b64)
