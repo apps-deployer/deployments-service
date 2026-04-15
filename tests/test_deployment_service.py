@@ -145,3 +145,45 @@ async def test_create_artifact_run_not_found_raises(svc, mock_repo):
     mock_repo.get_run = AsyncMock(return_value=None)
     with pytest.raises(NotFoundError):
         await svc.create_artifact(uuid.uuid4(), "registry/img:sha")
+
+
+# ── cleanup_stale_jobs ────────────────────────────────────────────────────────
+
+async def test_cleanup_stale_jobs_returns_count(svc, mock_repo):
+    mock_repo.mark_stale_jobs = AsyncMock(return_value=3)
+    count = await svc.cleanup_stale_jobs()
+    assert count == 3
+    mock_repo.mark_stale_jobs.assert_called_once()
+
+
+async def test_cleanup_stale_jobs_custom_timeouts(svc, mock_repo):
+    mock_repo.mark_stale_jobs = AsyncMock(return_value=0)
+    await svc.cleanup_stale_jobs(pending_timeout_minutes=10, running_timeout_minutes=30)
+    mock_repo.mark_stale_jobs.assert_called_once_with(10, 30)
+
+
+# ── _dispatch_deploy error handling ──────────────────────────────────────────
+
+async def test_dispatch_deploy_apply_async_failure_marks_failed(svc, mock_repo):
+    job = make_job(job_type=JobType.BUILD, status=RunStatus.RUNNING)
+    mock_repo.get_job = AsyncMock(return_value=job)
+
+    run = make_run()
+    run.artifact = MagicMock(image="registry/test:abc123")
+    mock_repo.get_run = AsyncMock(return_value=run)
+    deploy_job = make_job(job_type=JobType.DEPLOY)
+    mock_repo.get_job_by_run_and_type = AsyncMock(return_value=deploy_job)
+
+    with patch("src.services.deployment.run_deploy") as mock_deploy, \
+         patch("src.auth.generate_service_token", return_value="tok"), \
+         patch("src.main.settings") as mock_settings:
+        mock_settings.auth.jwt_secret = "secret"
+        mock_deploy.apply_async = MagicMock(side_effect=Exception("Redis down"))
+        await svc.update_job_status(job.id, RunStatus.SUCCESS)
+
+    # deploy job should be marked FAILED
+    failed_calls = [
+        c for c in mock_repo.update_job_status.call_args_list
+        if c.args[1] == RunStatus.FAILED
+    ]
+    assert len(failed_calls) >= 1

@@ -132,12 +132,25 @@ def _generate_manifests(
     return manifest_path
 
 
+def _sanitize_name(name: str) -> str:
+    """Convert to a valid k8s name: lowercase, only [a-z0-9-], max 63 chars."""
+    import re
+    name = name.lower()
+    name = re.sub(r"[^a-z0-9-]+", "-", name)
+    name = name.strip("-")
+    return name[:63]
+
+
 def _kubectl_apply(manifest_path: Path):
-    subprocess.run(
+    result = subprocess.run(
         ["kubectl", "apply", "-f", str(manifest_path)],
-        check=True,
         capture_output=True,
+        text=True,
     )
+    if result.returncode != 0:
+        raise RuntimeError(
+            f"kubectl apply failed (exit {result.returncode}):\n{result.stderr.strip()}"
+        )
 
 
 @celery.task(name="src.workers.deploy.run_deploy")
@@ -152,8 +165,8 @@ def run_deploy(
 ):
     try:
         _callback(f"/internal/jobs/{deploy_job_id}/status", status="running")
-        app_name = f"{project_name}-{env_name}"
-        namespace = project_name
+        app_name = _sanitize_name(f"{project_name}-{env_name}")
+        namespace = _sanitize_name(project_name)
 
         if not domain_name and settings.deploy.base_domain:
             domain_name = f"{app_name}.{settings.deploy.base_domain}"

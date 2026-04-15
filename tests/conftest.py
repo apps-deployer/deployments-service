@@ -103,6 +103,7 @@ def mock_repo():
     repo.get_job_by_run_and_type = AsyncMock(return_value=build_job)
     repo.update_job_status = AsyncMock(return_value=build_job)
     repo.create_artifact = AsyncMock(return_value=MagicMock(spec=Artifact))
+    repo.mark_stale_jobs = AsyncMock(return_value=0)
     return repo
 
 

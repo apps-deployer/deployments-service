@@ -189,6 +189,29 @@ async def test_update_job_status_not_found(client, mock_grpc):
 
 # ── POST /internal/deployments/{id}/artifact ──────────────────────────────────
 
+# ── POST /internal/cleanup ────────────────────────────────────────────────────
+
+async def test_cleanup_endpoint_returns_count(client, mock_grpc):
+    with patch("src.main.grpc_client", mock_grpc), \
+         patch("src.main.session_factory") as mock_factory, \
+         patch("src.services.deployment.DeploymentRepository") as MockRepo:
+        mock_session = AsyncMock()
+        mock_session.commit = AsyncMock()
+        mock_session.__aenter__ = AsyncMock(return_value=mock_session)
+        mock_session.__aexit__ = AsyncMock(return_value=False)
+        mock_factory.return_value = mock_session
+        instance = MagicMock()
+        instance.mark_stale_jobs = AsyncMock(return_value=2)
+        MockRepo.return_value = instance
+
+        resp = await client.post("/internal/cleanup")
+
+    assert resp.status_code == 200
+    assert resp.json() == {"cleaned": 2}
+
+
+# ── POST /internal/deployments/{id}/artifact ──────────────────────────────────
+
 async def test_create_artifact_success(client, mock_grpc):
     run = make_run()
     artifact = MagicMock()

@@ -5,7 +5,14 @@ from src.config import load_settings
 
 settings = load_settings()
 
-celery = Celery("deployments")
+celery = Celery(
+    "deployments",
+    include=[
+        "src.workers.build",
+        "src.workers.deploy",
+        "src.workers.cleanup",
+    ],
+)
 
 celery.conf.update(
     broker_url=settings.redis.url,
