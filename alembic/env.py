@@ -1,0 +1,76 @@
+import asyncio
+import os
+from logging.config import fileConfig
+from urllib.parse import quote
+
+from alembic import context
+from sqlalchemy import pool
+from sqlalchemy.ext.asyncio import async_engine_from_config
+
+from src.config import load_settings
+from src.models import Base
+
+config = context.config
+
+if config.config_file_name is not None:
+    fileConfig(config.config_file_name)
+
+target_metadata = Base.metadata
+
+
+def _database_url() -> str:
+    dsn = os.environ.get("DB_ADMIN_URL")
+    if not dsn:
+        db = load_settings().db
+        dsn = (
+            f"postgresql://{quote(db.user, safe='')}:{quote(db.password, safe='')}"
+            f"@{db.host}:{db.port}/{db.name}"
+        )
+    if dsn.startswith("postgresql://"):
+        return dsn.replace("postgresql://", "postgresql+asyncpg://", 1)
+    if dsn.startswith("postgres://"):
+        return dsn.replace("postgres://", "postgresql+asyncpg://", 1)
+    return dsn
+
+
+def run_migrations_offline() -> None:
+    context.configure(
+        url=_database_url(),
+        target_metadata=target_metadata,
+        literal_binds=True,
+        dialect_opts={"paramstyle": "named"},
+    )
+
+    with context.begin_transaction():
+        context.run_migrations()
+
+
+def do_run_migrations(connection) -> None:
+    context.configure(connection=connection, target_metadata=target_metadata)
+
+    with context.begin_transaction():
+        context.run_migrations()
+
+
+async def run_async_migrations() -> None:
+    config.set_main_option("sqlalchemy.url", _database_url())
+    connectable = async_engine_from_config(
+        config.get_section(config.config_ini_section, {}),
+        prefix="sqlalchemy.",
+        poolclass=pool.NullPool,
+    )
+
+    async with connectable.connect() as connection:
+        await connection.run_sync(do_run_migrations)
+
+    await connectable.dispose()
+
+
+def run_migrations_online() -> None:
+    asyncio.run(run_async_migrations())
+
+
+if context.is_offline_mode():
+    run_migrations_offline()
+else:
+    run_migrations_online()

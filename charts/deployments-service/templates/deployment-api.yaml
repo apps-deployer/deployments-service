@@ -17,7 +17,7 @@ spec:
         - name: migrator
           image: {{ .Values.image.api.repository }}:{{ .Values.image.api.tag }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
-          command: ["python", "migrate.py"]
+          command: ["alembic", "upgrade", "head"]
           env:
             - name: DB_ADMIN_URL
               valueFrom:
@@ -64,10 +64,5 @@ spec:
                 secretKeyRef:
                   name: deployments-service-secret
                   key: JWT_SECRET
-            - name: DEPLOY_GITHUB__WEBHOOK_SECRET
-              valueFrom:
-                secretKeyRef:
-                  name: deployments-service-secret
-                  key: GH_WEBHOOK_SECRET
           resources:
             {{- toYaml .Values.resources.api | nindent 12 }}

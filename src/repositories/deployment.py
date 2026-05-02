@@ -58,10 +58,16 @@ class DeploymentRepository:
         env_id: uuid.UUID | None = None,
         limit: int = 20,
         offset: int = 0,
+        project_ids: list[uuid.UUID] | None = None,
     ) -> tuple[list[DeploymentRun], int]:
         base = select(DeploymentRun)
         count_base = select(func.count(DeploymentRun.id))
 
+        if project_ids is not None:
+            if not project_ids:
+                return [], 0
+            base = base.where(DeploymentRun.project_id.in_(project_ids))
+            count_base = count_base.where(DeploymentRun.project_id.in_(project_ids))
         if project_id is not None:
             base = base.where(DeploymentRun.project_id == project_id)
             count_base = count_base.where(DeploymentRun.project_id == project_id)

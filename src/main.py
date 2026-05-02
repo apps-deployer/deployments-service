@@ -35,10 +35,6 @@ async def healthz():
 
 
 from src.api.deployments import internal_router, router as deployments_router
-from src.api.webhooks import router as webhooks_router
-from src.api.projects_gateway import router as projects_router
 
 app.include_router(deployments_router)
 app.include_router(internal_router)
-app.include_router(webhooks_router)
-app.include_router(projects_router)

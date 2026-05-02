@@ -74,6 +74,12 @@ def mock_grpc():
         id=str(uuid.uuid4()), name="test-project",
         repo_url="https://github.com/test/repo", owner_id=USER_ID,
     ))
+    grpc.list_projects = AsyncMock(return_value=[
+        Project(
+            id=str(uuid.uuid4()), name="test-project",
+            repo_url="https://github.com/test/repo", owner_id=USER_ID,
+        )
+    ])
     grpc.get_env = AsyncMock(return_value=Env(
         id=str(uuid.uuid4()), name="production", project_id=str(uuid.uuid4()),
         target_branch="main",

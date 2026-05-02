@@ -132,6 +132,11 @@ class CreateDeploymentRequest(BaseModel):
     commit_sha: str | None = None
 
 
+class CreateInternalDeploymentRequest(CreateDeploymentRequest):
+    commit_message: str | None = None
+    trigger_type: TriggerType = TriggerType.WEBHOOK
+
+
 # --- Responses ---
 
 

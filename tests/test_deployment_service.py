@@ -82,7 +82,7 @@ async def test_list_deployments_passes_filters(svc, mock_repo):
     project_id = uuid.uuid4()
     env_id = uuid.uuid4()
     await svc.list_deployments(project_id=project_id, env_id=env_id, limit=5, offset=10)
-    mock_repo.list_runs.assert_called_once_with(project_id, env_id, 5, 10)
+    mock_repo.list_runs.assert_called_once_with(project_id, env_id, 5, 10, None)
 
 
 # ── update_job_status ─────────────────────────────────────────────────────────

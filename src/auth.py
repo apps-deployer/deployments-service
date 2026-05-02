@@ -17,10 +17,30 @@ def generate_service_token(secret: str) -> str:
     now = datetime.now(UTC)
     payload = {
         "sub": "service:deployments",
+        "typ": "service",
         "iat": now,
         "exp": now + timedelta(minutes=5),
     }
     return jwt.encode(payload, secret, algorithm="HS256")
+
+
+def require_service(authorization: str = Header(...)) -> str:
+    if not authorization.startswith("Bearer "):
+        raise HTTPException(status_code=401, detail="Invalid authorization format")
+
+    token = authorization.removeprefix("Bearer ")
+    from src.main import settings
+
+    try:
+        claims = jwt.decode(token, settings.auth.jwt_secret, algorithms=["HS256"])
+    except jwt.ExpiredSignatureError:
+        raise HTTPException(status_code=401, detail="Token expired")
+    except jwt.InvalidTokenError as e:
+        raise HTTPException(status_code=401, detail=str(e))
+
+    if claims.get("typ") != "service" and not str(claims.get("sub", "")).startswith("service:"):
+        raise HTTPException(status_code=403, detail="Service token required")
+    return token
 
 
 def get_current_user(authorization: str = Header(...)) -> CurrentUser:
@@ -38,8 +58,12 @@ def get_current_user(authorization: str = Header(...)) -> CurrentUser:
     except jwt.InvalidTokenError as e:
         raise HTTPException(status_code=401, detail=str(e))
 
+    sub = claims["sub"]
+    if str(sub).startswith("service:"):
+        raise HTTPException(status_code=403, detail="User token required")
+
     return CurrentUser(
-        id=claims["sub"],
+        id=sub,
         github_login=claims.get("github_login", ""),
         token=token,
     )

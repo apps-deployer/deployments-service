@@ -94,8 +94,9 @@ class DeploymentService:
         env_id: uuid.UUID | None = None,
         limit: int = 20,
         offset: int = 0,
+        project_ids: list[uuid.UUID] | None = None,
     ):
-        return await self.repo.list_runs(project_id, env_id, limit, offset)
+        return await self.repo.list_runs(project_id, env_id, limit, offset, project_ids)
 
     async def update_job_status(
         self,

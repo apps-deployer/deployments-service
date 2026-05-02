@@ -43,7 +43,6 @@ secrets:
   dbAdminPassword: ""
   jwtSecret: ""
   redisPassword: ""
-  ghWebhookSecret: ""
 
 resources:
   api:
