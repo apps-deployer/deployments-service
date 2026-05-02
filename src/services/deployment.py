@@ -67,7 +67,8 @@ class DeploymentService:
                     commit_sha=commit_sha,
                     deploy_config=dataclasses.asdict(deploy_config),
                     env_vars=[{"key": v.key, "value": v.value} for v in resolved_vars],
-                    project_name=project.name,
+                    project_name=project.slug or project.name,
+                    project_id=str(project_id),
                 ),
                 queue="build",
             )
@@ -116,6 +117,11 @@ class DeploymentService:
                 RunStatus.FAILED,
                 finished_at=datetime.now(UTC).replace(tzinfo=None),
             )
+            await self._fail_incomplete_jobs(
+                job.deployment_run_id,
+                exclude_job_id=job_id,
+                error=f"Skipped because {job.type.value} job failed",
+            )
 
         if job.type == JobType.BUILD and status == RunStatus.SUCCESS:
             await self._dispatch_deploy(job.deployment_run_id)
@@ -128,6 +134,22 @@ class DeploymentService:
             )
 
         await self.session.commit()
+
+    async def _fail_incomplete_jobs(
+        self,
+        run_id: uuid.UUID,
+        *,
+        exclude_job_id: uuid.UUID,
+        error: str,
+    ):
+        run = await self.repo.get_run(run_id)
+        if run is None:
+            return
+        for other_job in run.jobs:
+            if other_job.id == exclude_job_id:
+                continue
+            if other_job.status in (RunStatus.PENDING, RunStatus.RUNNING):
+                await self.repo.update_job_status(other_job.id, RunStatus.FAILED, error)
 
     async def cleanup_stale_jobs(
         self,
@@ -176,7 +198,7 @@ class DeploymentService:
                     deployment_run_id=str(run_id),
                     deploy_job_id=str(deploy_job.id),
                     image=run.artifact.image,
-                    project_name=project.name,
+                    project_name=project.slug or project.name,
                     env_name=env.name,
                     app_port=deploy_config.app_port,
                     env_vars=[{"key": v.key, "value": v.value} for v in resolved_vars],

@@ -88,12 +88,22 @@ async def test_list_deployments_passes_filters(svc, mock_repo):
 # ── update_job_status ─────────────────────────────────────────────────────────
 
 async def test_update_job_status_failed_marks_run_failed(svc, mock_repo):
-    job = make_job(job_type=JobType.BUILD, status=RunStatus.RUNNING)
+    run_id = uuid.uuid4()
+    job = make_job(run_id=run_id, job_type=JobType.BUILD, status=RunStatus.RUNNING)
+    deploy_job = make_job(run_id=run_id, job_type=JobType.DEPLOY, status=RunStatus.PENDING)
+    run = make_run(jobs=[job, deploy_job])
+    run.id = run_id
     mock_repo.get_job = AsyncMock(return_value=job)
+    mock_repo.get_run = AsyncMock(return_value=run)
 
     await svc.update_job_status(job.id, RunStatus.FAILED, error="build error")
 
-    mock_repo.update_job_status.assert_called_once_with(job.id, RunStatus.FAILED, "build error")
+    mock_repo.update_job_status.assert_any_call(job.id, RunStatus.FAILED, "build error")
+    mock_repo.update_job_status.assert_any_call(
+        deploy_job.id,
+        RunStatus.FAILED,
+        "Skipped because build job failed",
+    )
     mock_repo.update_run_status.assert_called_once()
     _, call_status = mock_repo.update_run_status.call_args.args
     assert call_status == RunStatus.FAILED

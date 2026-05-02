@@ -17,6 +17,7 @@ from projects.v1 import frameworks_pb2, frameworks_pb2_grpc
 class Project:
     id: str
     name: str
+    slug: str
     repo_url: str
     owner_id: str
 
@@ -117,14 +118,14 @@ class ProjectsGrpcClient:
             projects_pb2.GetProjectRequest(id=project_id),
             metadata=self._metadata(),
         )
-        return Project(id=resp.id, name=resp.name, repo_url=resp.repo_url, owner_id=resp.owner_id)
+        return Project(id=resp.id, name=resp.name, slug=resp.slug, repo_url=resp.repo_url, owner_id=resp.owner_id)
 
     async def list_projects(self, limit: int = 100, offset: int = 0) -> list[Project]:
         resp = await self._projects.ListProjects(
             projects_pb2.ListProjectsRequest(limit=limit, offset=offset),
             metadata=self._metadata(),
         )
-        return [Project(id=p.id, name=p.name, repo_url=p.repo_url, owner_id=p.owner_id) for p in resp.projects]
+        return [Project(id=p.id, name=p.name, slug=p.slug, repo_url=p.repo_url, owner_id=p.owner_id) for p in resp.projects]
 
     async def create_project(self, name: str, repo_url: str, deploy_config_template_id: str = "") -> Project:
         req = projects_pb2.CreateProjectRequest(name=name, repo_url=repo_url)
@@ -134,7 +135,7 @@ class ProjectsGrpcClient:
             req,
             metadata=self._metadata(),
         )
-        return Project(id=resp.id, name=resp.name, repo_url=resp.repo_url, owner_id=resp.owner_id)
+        return Project(id=resp.id, name=resp.name, slug=resp.slug, repo_url=resp.repo_url, owner_id=resp.owner_id)
 
     async def update_project(self, project_id: str, name: str, repo_url: str) -> None:
         await self._projects.UpdateProject(

@@ -71,12 +71,12 @@ def mock_grpc():
     grpc = MagicMock()
     grpc.with_token = MagicMock(return_value=grpc)
     grpc.get_project = AsyncMock(return_value=Project(
-        id=str(uuid.uuid4()), name="test-project",
+        id=str(uuid.uuid4()), name="Test Project", slug="test-project",
         repo_url="https://github.com/test/repo", owner_id=USER_ID,
     ))
     grpc.list_projects = AsyncMock(return_value=[
         Project(
-            id=str(uuid.uuid4()), name="test-project",
+            id=str(uuid.uuid4()), name="Test Project", slug="test-project",
             repo_url="https://github.com/test/repo", owner_id=USER_ID,
         )
     ])

@@ -8,7 +8,7 @@ from src.workers.deploy import (
     _sanitize_name,
     _validate_app_port,
 )
-from src.workers.build import _generate_dockerfile, _job_name
+from src.workers.build import _generate_dockerfile, _image_destination, _job_name, _registry_component
 from src.workers.urls import internal_url, service_url
 
 
@@ -70,6 +70,20 @@ def test_job_name_only_alphanumeric_and_dash():
     job_id = "019d925e-f5c9-7d42-9e58-84dee211a1d6"
     name = _job_name(job_id)
     assert re.match(r'^[a-z0-9][a-z0-9-]*[a-z0-9]$', name)
+
+
+def test_registry_component_normalizes_project_name():
+    assert _registry_component("Python Hello App") == "python-hello-app"
+
+
+def test_image_destination_includes_project_id_namespace():
+    image = _image_destination(
+        "cr.yandex/crp123/user-apps/",
+        "Python Hello App",
+        "019d925e-f5c9-7d42-9e58-84dee211a1d6",
+        "abc123",
+    )
+    assert image == "cr.yandex/crp123/user-apps/019d925ef5c9/python-hello-app:abc123"
 
 
 # ── _render_env_block ─────────────────────────────────────────────────────────

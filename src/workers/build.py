@@ -1,6 +1,7 @@
 import base64
 import logging
 import os
+import re
 import time
 
 import httpx
@@ -69,6 +70,26 @@ def _generate_dockerfile(deploy_config: dict) -> str:
 def _job_name(build_job_id: str) -> str:
     hex_id = build_job_id.replace("-", "")[:24]
     return f"kaniko-{hex_id}"
+
+
+def _registry_component(value: str, *, fallback: str = "app", max_length: int = 50) -> str:
+    value = value.lower()
+    value = re.sub(r"[^a-z0-9._-]+", "-", value)
+    value = re.sub(r"[-._]{2,}", "-", value)
+    value = value.strip("-._")
+    if not value:
+        value = fallback
+    return value[:max_length].strip("-._") or fallback
+
+
+def _image_destination(registry: str, project_name: str, project_id: str, commit_sha: str) -> str:
+    registry = registry.strip().rstrip("/")
+    project_slug = _registry_component(project_name)
+    project_key = re.sub(r"[^a-z0-9]", "", project_id.lower())[:12]
+    if not project_key:
+        project_key = "unknown"
+    tag = re.sub(r"[^a-zA-Z0-9_.-]", "-", commit_sha)[:128] or "latest"
+    return f"{registry}/{project_key}/{project_slug}:{tag}"
 
 
 def _create_kaniko_job(
@@ -170,6 +191,7 @@ def run_build(
     deploy_config: dict,
     env_vars: list[dict],
     project_name: str,
+    project_id: str = "",
 ):
     try:
         _callback(f"/internal/jobs/{build_job_id}/status", status="running")
@@ -178,7 +200,7 @@ def run_build(
         dockerfile = _generate_dockerfile(deploy_config)
         dockerfile_b64 = base64.b64encode(dockerfile.encode()).decode()
         registry = settings.registry.user_apps_url or settings.registry.url
-        image_tag = f"{registry}/{project_name}:{commit_sha[:12]}"
+        image_tag = _image_destination(registry, project_name, project_id or deployment_run_id, commit_sha[:12])
         job_name = _job_name(build_job_id)
 
         _create_kaniko_job(job_name, repo_url, commit_sha, image_tag, dockerfile_b64)
