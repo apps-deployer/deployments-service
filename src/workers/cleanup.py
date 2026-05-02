@@ -4,6 +4,7 @@ import requests
 
 from src.workers.celery_app import celery
 from src.config import load_settings
+from src.workers.urls import internal_url
 
 logger = logging.getLogger(__name__)
 
@@ -11,8 +12,7 @@ logger = logging.getLogger(__name__)
 @celery.task(name="src.workers.cleanup.cleanup_stale_jobs")
 def cleanup_stale_jobs():
     settings = load_settings()
-    service_url = settings.server.service_url.rstrip("/")
-    url = f"{service_url}/internal/cleanup"
+    url = internal_url(settings.server.service_url, "/internal/cleanup")
     try:
         resp = requests.post(url, timeout=30)
         resp.raise_for_status()

@@ -7,6 +7,7 @@ import httpx
 from kubernetes import client, config
 
 from src.workers.celery_app import celery, settings
+from src.workers.urls import internal_url
 
 logger = logging.getLogger(__name__)
 
@@ -16,7 +17,7 @@ JOB_TTL_AFTER_FINISHED = 300
 
 
 def _callback(path: str, **json_body):
-    url = f"{settings.server.service_url.rstrip('/')}{path}"
+    url = internal_url(settings.server.service_url, path)
     resp = httpx.put(url, json=json_body)
     resp.raise_for_status()
 
@@ -186,7 +187,7 @@ def run_build(
             raise RuntimeError(f"Kaniko job {job_name} failed")
 
         httpx.post(
-            f"{settings.server.service_url.rstrip('/')}/internal/deployments/{deployment_run_id}/artifact",
+            internal_url(settings.server.service_url, f"/internal/deployments/{deployment_run_id}/artifact"),
             json={"image": image_tag},
         ).raise_for_status()
         _callback(f"/internal/jobs/{build_job_id}/status", status="success")

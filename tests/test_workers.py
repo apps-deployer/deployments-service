@@ -9,6 +9,7 @@ from src.workers.deploy import (
     _validate_app_port,
 )
 from src.workers.build import _generate_dockerfile, _job_name
+from src.workers.urls import internal_url, service_url
 
 
 # ── _sanitize_name ────────────────────────────────────────────────────────────
@@ -89,6 +90,19 @@ def test_render_env_block_multiple():
     result = _render_env_block(vars_)
     assert "A" in result
     assert "B" in result
+
+
+# ── worker callback URLs ──────────────────────────────────────────────────────
+
+def test_service_url_strips_crlf_and_trailing_slash():
+    assert service_url("http://deployments-service:8000/\r\n") == "http://deployments-service:8000"
+
+
+def test_internal_url_normalizes_path():
+    assert (
+        internal_url("http://deployments-service:8000/\r", "internal/jobs/1/status")
+        == "http://deployments-service:8000/internal/jobs/1/status"
+    )
 
 
 # ── application port ──────────────────────────────────────────────────────────

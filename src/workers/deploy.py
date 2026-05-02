@@ -7,6 +7,7 @@ from string import Template
 import httpx
 
 from src.workers.celery_app import celery, settings
+from src.workers.urls import internal_url
 
 logger = logging.getLogger(__name__)
 
@@ -87,7 +88,7 @@ spec:
 
 
 def _callback(path: str, **json_body):
-    url = f"{settings.server.service_url.rstrip('/')}{path}"
+    url = internal_url(settings.server.service_url, path)
     resp = httpx.put(url, json=json_body)
     resp.raise_for_status()
 
@@ -217,7 +218,7 @@ def run_deploy(
             display_domain = _decode_display_domain(domain_name)
             url = display_domain if display_domain.startswith("http") else f"https://{display_domain}"
             httpx.patch(
-                f"{settings.server.service_url.rstrip('/')}/internal/deployments/{deployment_run_id}/artifact",
+                internal_url(settings.server.service_url, f"/internal/deployments/{deployment_run_id}/artifact"),
                 json={"url": url},
             ).raise_for_status()
 
