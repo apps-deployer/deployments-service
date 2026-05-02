@@ -26,7 +26,7 @@ from google.protobuf import empty_pb2 as google_dot_protobuf_dot_empty__pb2
 from google.protobuf import timestamp_pb2 as google_dot_protobuf_dot_timestamp__pb2
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n projects/v1/deploy_configs.proto\x12\x0bprojects.v1\x1a\x1bgoogle/protobuf/empty.proto\x1a\x1fgoogle/protobuf/timestamp.proto\"\xd5\x02\n\x14\x44\x65ployConfigResponse\x12\n\n\x02id\x18\x01 \x01(\t\x12\x12\n\nproject_id\x18\x02 \x01(\t\x12\x14\n\x0c\x66ramework_id\x18\x03 \x01(\t\x12\x19\n\x11root_dir_override\x18\x04 \x01(\t\x12\x1b\n\x13output_dir_override\x18\x05 \x01(\t\x12\x1b\n\x13\x62\x61se_image_override\x18\x06 \x01(\t\x12\x1c\n\x14install_cmd_override\x18\x07 \x01(\t\x12\x1a\n\x12\x62uild_cmd_override\x18\x08 \x01(\t\x12\x18\n\x10run_cmd_override\x18\t \x01(\t\x12.\n\ncreated_at\x18\n \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12.\n\nupdated_at\x18\x0b \x01(\x0b\x32\x1a.google.protobuf.Timestamp\"\xb0\x01\n\x1bResolveDeployConfigResponse\x12\n\n\x02id\x18\x01 \x01(\t\x12\x12\n\nproject_id\x18\x02 \x01(\t\x12\x10\n\x08root_dir\x18\x03 \x01(\t\x12\x12\n\noutput_dir\x18\x04 \x01(\t\x12\x12\n\nbase_image\x18\x05 \x01(\t\x12\x13\n\x0binstall_cmd\x18\x06 \x01(\t\x12\x11\n\tbuild_cmd\x18\x07 \x01(\t\x12\x0f\n\x07run_cmd\x18\x08 \x01(\t\",\n\x16GetDeployConfigRequest\x12\x12\n\nproject_id\x18\x01 \x01(\t\"\xe6\x01\n\x19UpdateDeployConfigRequest\x12\n\n\x02id\x18\x01 \x01(\t\x12\x14\n\x0c\x66ramework_id\x18\x02 \x01(\t\x12\x19\n\x11root_dir_override\x18\x03 \x01(\t\x12\x1b\n\x13output_dir_override\x18\x04 \x01(\t\x12\x1b\n\x13\x62\x61se_image_override\x18\x05 \x01(\t\x12\x1c\n\x14install_cmd_override\x18\x06 \x01(\t\x12\x1a\n\x12\x62uild_cmd_override\x18\x07 \x01(\t\x12\x18\n\x10run_cmd_override\x18\x08 \x01(\t2\xac\x02\n\x13\x44\x65ployConfigService\x12\x64\n\x13ResolveDeployConfig\x12#.projects.v1.GetDeployConfigRequest\x1a(.projects.v1.ResolveDeployConfigResponse\x12Y\n\x0fGetDeployConfig\x12#.projects.v1.GetDeployConfigRequest\x1a!.projects.v1.DeployConfigResponse\x12T\n\x12UpdateDeployConfig\x12&.projects.v1.UpdateDeployConfigRequest\x1a\x16.google.protobuf.EmptyB?Z=github.com/apps-deployer/protos/gen/go/projects/v1;projectsv1b\x08\x65\x64itionsp\xe9\x07')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n projects/v1/deploy_configs.proto\x12\x0bprojects.v1\x1a\x1bgoogle/protobuf/empty.proto\x1a\x1fgoogle/protobuf/timestamp.proto\"\xf0\x02\n\x14\x44\x65ployConfigResponse\x12\n\n\x02id\x18\x01 \x01(\t\x12\x12\n\nproject_id\x18\x02 \x01(\t\x12\x14\n\x0c\x66ramework_id\x18\x03 \x01(\t\x12\x19\n\x11root_dir_override\x18\x04 \x01(\t\x12\x1b\n\x13output_dir_override\x18\x05 \x01(\t\x12\x1b\n\x13\x62\x61se_image_override\x18\x06 \x01(\t\x12\x1c\n\x14install_cmd_override\x18\x07 \x01(\t\x12\x1a\n\x12\x62uild_cmd_override\x18\x08 \x01(\t\x12\x18\n\x10run_cmd_override\x18\t \x01(\t\x12.\n\ncreated_at\x18\n \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12.\n\nupdated_at\x18\x0b \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12\x19\n\x11\x61pp_port_override\x18\x0c \x01(\x05\"\xc2\x01\n\x1bResolveDeployConfigResponse\x12\n\n\x02id\x18\x01 \x01(\t\x12\x12\n\nproject_id\x18\x02 \x01(\t\x12\x10\n\x08root_dir\x18\x03 \x01(\t\x12\x12\n\noutput_dir\x18\x04 \x01(\t\x12\x12\n\nbase_image\x18\x05 \x01(\t\x12\x13\n\x0binstall_cmd\x18\x06 \x01(\t\x12\x11\n\tbuild_cmd\x18\x07 \x01(\t\x12\x0f\n\x07run_cmd\x18\x08 \x01(\t\x12\x10\n\x08\x61pp_port\x18\t \x01(\x05\",\n\x16GetDeployConfigRequest\x12\x12\n\nproject_id\x18\x01 \x01(\t\"\x81\x02\n\x19UpdateDeployConfigRequest\x12\n\n\x02id\x18\x01 \x01(\t\x12\x14\n\x0c\x66ramework_id\x18\x02 \x01(\t\x12\x19\n\x11root_dir_override\x18\x03 \x01(\t\x12\x1b\n\x13output_dir_override\x18\x04 \x01(\t\x12\x1b\n\x13\x62\x61se_image_override\x18\x05 \x01(\t\x12\x1c\n\x14install_cmd_override\x18\x06 \x01(\t\x12\x1a\n\x12\x62uild_cmd_override\x18\x07 \x01(\t\x12\x18\n\x10run_cmd_override\x18\x08 \x01(\t\x12\x19\n\x11\x61pp_port_override\x18\t \x01(\x05\x32\xac\x02\n\x13\x44\x65ployConfigService\x12\x64\n\x13ResolveDeployConfig\x12#.projects.v1.GetDeployConfigRequest\x1a(.projects.v1.ResolveDeployConfigResponse\x12Y\n\x0fGetDeployConfig\x12#.projects.v1.GetDeployConfigRequest\x1a!.projects.v1.DeployConfigResponse\x12T\n\x12UpdateDeployConfig\x12&.projects.v1.UpdateDeployConfigRequest\x1a\x16.google.protobuf.EmptyB?Z=github.com/apps-deployer/protos/gen/go/projects/v1;projectsv1b\x08\x65\x64itionsp\xe9\x07')
 
 _globals = globals()
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, _globals)
@@ -35,13 +35,13 @@ if not _descriptor._USE_C_DESCRIPTORS:
   _globals['DESCRIPTOR']._loaded_options = None
   _globals['DESCRIPTOR']._serialized_options = b'Z=github.com/apps-deployer/protos/gen/go/projects/v1;projectsv1'
   _globals['_DEPLOYCONFIGRESPONSE']._serialized_start=112
-  _globals['_DEPLOYCONFIGRESPONSE']._serialized_end=453
-  _globals['_RESOLVEDEPLOYCONFIGRESPONSE']._serialized_start=456
-  _globals['_RESOLVEDEPLOYCONFIGRESPONSE']._serialized_end=632
-  _globals['_GETDEPLOYCONFIGREQUEST']._serialized_start=634
-  _globals['_GETDEPLOYCONFIGREQUEST']._serialized_end=678
-  _globals['_UPDATEDEPLOYCONFIGREQUEST']._serialized_start=681
-  _globals['_UPDATEDEPLOYCONFIGREQUEST']._serialized_end=911
-  _globals['_DEPLOYCONFIGSERVICE']._serialized_start=914
-  _globals['_DEPLOYCONFIGSERVICE']._serialized_end=1214
+  _globals['_DEPLOYCONFIGRESPONSE']._serialized_end=480
+  _globals['_RESOLVEDEPLOYCONFIGRESPONSE']._serialized_start=483
+  _globals['_RESOLVEDEPLOYCONFIGRESPONSE']._serialized_end=677
+  _globals['_GETDEPLOYCONFIGREQUEST']._serialized_start=679
+  _globals['_GETDEPLOYCONFIGREQUEST']._serialized_end=723
+  _globals['_UPDATEDEPLOYCONFIGREQUEST']._serialized_start=726
+  _globals['_UPDATEDEPLOYCONFIGREQUEST']._serialized_end=983
+  _globals['_DEPLOYCONFIGSERVICE']._serialized_start=986
+  _globals['_DEPLOYCONFIGSERVICE']._serialized_end=1286
 # @@protoc_insertion_point(module_scope)

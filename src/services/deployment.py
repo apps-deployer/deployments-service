@@ -165,6 +165,7 @@ class DeploymentService:
 
         project = await grpc.get_project(str(run.project_id))
         env = await grpc.get_env(str(run.env_id))
+        deploy_config = await grpc.resolve_deploy_config(str(run.project_id))
         resolved_vars = await grpc.resolve_vars(str(run.env_id))
 
         deploy_job = await self.repo.get_job_by_run_and_type(run_id, JobType.DEPLOY)
@@ -177,6 +178,7 @@ class DeploymentService:
                     image=run.artifact.image,
                     project_name=project.name,
                     env_name=env.name,
+                    app_port=deploy_config.app_port,
                     env_vars=[{"key": v.key, "value": v.value} for v in resolved_vars],
                     project_id=str(run.project_id),
                 ),

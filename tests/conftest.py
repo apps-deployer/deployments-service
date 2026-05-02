@@ -88,6 +88,7 @@ def mock_grpc():
         id=str(uuid.uuid4()), project_id=str(uuid.uuid4()),
         root_dir=".", output_dir="dist", base_image="node:20-alpine",
         install_cmd="npm install", build_cmd="npm run build", run_cmd="node dist/index.js",
+        app_port=8080,
     ))
     grpc.resolve_vars = AsyncMock(return_value=[])
     return grpc

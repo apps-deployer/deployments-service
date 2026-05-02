@@ -39,6 +39,7 @@ class DeployConfig:
     install_cmd: str
     build_cmd: str
     run_cmd: str
+    app_port: int
 
 
 @dataclass
@@ -205,6 +206,7 @@ class ProjectsGrpcClient:
             root_dir=resp.root_dir, output_dir=resp.output_dir,
             base_image=resp.base_image, install_cmd=resp.install_cmd,
             build_cmd=resp.build_cmd, run_cmd=resp.run_cmd,
+            app_port=resp.app_port or 8080,
         )
 
     async def get_deploy_config(self, project_id: str) -> DeployConfigRaw:

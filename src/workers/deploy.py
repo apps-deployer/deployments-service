@@ -32,7 +32,7 @@ spec:
         - name: $app_name
           image: $image
           ports:
-            - containerPort: 8080
+            - containerPort: $app_port
           env:
 $env_block
 """)
@@ -48,7 +48,7 @@ spec:
     app: $app_name
   ports:
     - port: 80
-      targetPort: 8080
+      targetPort: $app_port
 """)
 
 _NAMESPACE_TEMPLATE = Template("""\
@@ -102,6 +102,12 @@ def _render_env_block(env_vars: list[dict]) -> str:
     return "\n".join(lines)
 
 
+def _validate_app_port(app_port: int) -> int:
+    if app_port < 1 or app_port > 65535:
+        raise ValueError("app_port must be an integer from 1 to 65535")
+    return app_port
+
+
 def _generate_manifests(
     app_name: str,
     namespace: str,
@@ -109,7 +115,9 @@ def _generate_manifests(
     domain: str,
     env_vars: list[dict],
     dest: Path,
+    app_port: int = 8080,
 ):
+    app_port = _validate_app_port(app_port)
     env_block = _render_env_block(env_vars)
     ctx = dict(
         app_name=app_name,
@@ -117,6 +125,7 @@ def _generate_manifests(
         image=image,
         domain=domain,
         env_block=env_block,
+        app_port=app_port,
     )
 
     manifests = [
@@ -180,6 +189,7 @@ def run_deploy(
     project_name: str,
     env_name: str,
     env_vars: list[dict],
+    app_port: int = 8080,
     project_id: str = "",
 ):
     try:
@@ -198,6 +208,7 @@ def run_deploy(
                 image=image,
                 domain=domain_name,
                 env_vars=env_vars,
+                app_port=app_port,
                 dest=dest,
             )
             _kubectl_apply(manifest_path)

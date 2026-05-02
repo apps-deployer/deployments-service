@@ -1,7 +1,13 @@
 """Tests for worker utility functions."""
 import pytest
 
-from src.workers.deploy import _sanitize_name, _render_env_block, _decode_display_domain
+from src.workers.deploy import (
+    _decode_display_domain,
+    _generate_manifests,
+    _render_env_block,
+    _sanitize_name,
+    _validate_app_port,
+)
 from src.workers.build import _generate_dockerfile, _job_name
 
 
@@ -83,6 +89,48 @@ def test_render_env_block_multiple():
     result = _render_env_block(vars_)
     assert "A" in result
     assert "B" in result
+
+
+# ── application port ──────────────────────────────────────────────────────────
+
+def test_validate_app_port():
+    assert _validate_app_port(3000) == 3000
+
+
+def test_validate_app_port_invalid():
+    with pytest.raises(ValueError):
+        _validate_app_port(0)
+
+
+def test_generate_manifests_uses_app_port(tmp_path):
+    manifest_path = _generate_manifests(
+        app_name="demo",
+        namespace="demo",
+        image="registry/demo:latest",
+        domain="",
+        env_vars=[],
+        app_port=3000,
+        dest=tmp_path,
+    )
+
+    manifest = manifest_path.read_text()
+    assert "containerPort: 3000" in manifest
+    assert "targetPort: 3000" in manifest
+
+
+def test_generate_manifests_default_port(tmp_path):
+    manifest_path = _generate_manifests(
+        app_name="demo",
+        namespace="demo",
+        image="registry/demo:latest",
+        domain="",
+        env_vars=[],
+        dest=tmp_path,
+    )
+
+    manifest = manifest_path.read_text()
+    assert "containerPort: 8080" in manifest
+    assert "targetPort: 8080" in manifest
 
 
 # ── _generate_dockerfile ──────────────────────────────────────────────────────
