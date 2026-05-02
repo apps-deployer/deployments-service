@@ -17,7 +17,7 @@ def app():
         settings.auth.jwt_secret = JWT_SECRET
         settings.grpc.projects_service_addr = "localhost:50051"
         settings.server.frontend_url = "http://localhost:5173"
-        settings.server.base_url = "http://localhost:8000"
+        settings.server.service_url = "http://localhost:8000"
         settings.github.webhook_secret = ""
         settings.db.url = "postgresql+asyncpg://postgres:postgres@localhost:5433/deployments_db"
         settings.redis.url = "redis://localhost:6379/0"

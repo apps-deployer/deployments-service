@@ -87,7 +87,7 @@ spec:
 
 
 def _callback(path: str, **json_body):
-    url = f"{settings.server.base_url}{path}"
+    url = f"{settings.server.service_url.rstrip('/')}{path}"
     resp = httpx.put(url, json=json_body)
     resp.raise_for_status()
 
@@ -217,7 +217,7 @@ def run_deploy(
             display_domain = _decode_display_domain(domain_name)
             url = display_domain if display_domain.startswith("http") else f"https://{display_domain}"
             httpx.patch(
-                f"{settings.server.base_url}/internal/deployments/{deployment_run_id}/artifact",
+                f"{settings.server.service_url.rstrip('/')}/internal/deployments/{deployment_run_id}/artifact",
                 json={"url": url},
             ).raise_for_status()
 

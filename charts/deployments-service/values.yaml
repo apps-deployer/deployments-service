@@ -25,7 +25,7 @@ grpc:
 
 server:
   port: 8000
-  baseUrl: ""
+  serviceUrl: ""
   frontendUrl: ""
 
 registry:

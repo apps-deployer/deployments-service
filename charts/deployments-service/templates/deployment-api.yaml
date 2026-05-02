@@ -53,8 +53,8 @@ spec:
               value: {{ .Values.grpc.projectsServiceAddr | quote }}
             - name: DEPLOY_SERVER__PORT
               value: {{ .Values.server.port | quote }}
-            - name: DEPLOY_SERVER__BASE_URL
-              value: {{ .Values.server.baseUrl | quote }}
+            - name: DEPLOY_SERVER__SERVICE_URL
+              value: {{ .Values.server.serviceUrl | quote }}
             - name: DEPLOY_SERVER__FRONTEND_URL
               value: {{ .Values.server.frontendUrl | quote }}
             - name: DEPLOY_REGISTRY__URL

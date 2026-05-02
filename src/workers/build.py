@@ -16,7 +16,7 @@ JOB_TTL_AFTER_FINISHED = 300
 
 
 def _callback(path: str, **json_body):
-    url = f"{settings.server.base_url}{path}"
+    url = f"{settings.server.service_url.rstrip('/')}{path}"
     resp = httpx.put(url, json=json_body)
     resp.raise_for_status()
 
@@ -186,7 +186,7 @@ def run_build(
             raise RuntimeError(f"Kaniko job {job_name} failed")
 
         httpx.post(
-            f"{settings.server.base_url}/internal/deployments/{deployment_run_id}/artifact",
+            f"{settings.server.service_url.rstrip('/')}/internal/deployments/{deployment_run_id}/artifact",
             json={"image": image_tag},
         ).raise_for_status()
         _callback(f"/internal/jobs/{build_job_id}/status", status="success")

@@ -69,7 +69,7 @@ jobs:
             --set secrets.dbAdminPassword="${{ secrets.PG_DEPLOYMENTS_ADMIN_PASSWORD }}" \
             --set secrets.jwtSecret="${{ secrets.JWT_SECRET }}" \
             --set secrets.redisPassword="${{ secrets.REDIS_PASSWORD }}" \
-            --set server.baseUrl="${{ vars.DEPLOYMENTS_BASE_URL }}" \
+            --set server.serviceUrl="${{ vars.DEPLOYMENTS_SERVICE_URL }}" \
             --set server.frontendUrl="${{ vars.FRONTEND_URL }}" \
             --set registry.url="${{ vars.REGISTRY_ENDPOINT }}" \
             --set registry.userAppsUrl="${{ vars.USER_APPS_REGISTRY_ENDPOINT }}" \
