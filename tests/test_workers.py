@@ -9,6 +9,7 @@ from src.workers.deploy import (
     _validate_app_port,
 )
 from src.workers.build import _generate_dockerfile, _image_destination, _job_name, _registry_component
+from src.workers.cleanup import cleanup_stale_jobs
 from src.workers.urls import internal_url, service_url
 
 
@@ -227,3 +228,45 @@ def test_generate_dockerfile_no_build_cmd():
     }
     df = _generate_dockerfile(cfg)
     assert "RUN" not in df
+
+
+# ── cleanup_stale_jobs ────────────────────────────────────────────────────────
+
+def test_cleanup_stale_jobs_posts_internal_cleanup(monkeypatch):
+    class Settings:
+        class server:
+            service_url = "http://deployments-service:8000/"
+
+    class Response:
+        def raise_for_status(self):
+            return None
+
+        def json(self):
+            return {"cleaned": 2}
+
+    calls = []
+
+    def fake_post(url, timeout):
+        calls.append((url, timeout))
+        return Response()
+
+    monkeypatch.setattr("src.workers.cleanup.load_settings", lambda: Settings())
+    monkeypatch.setattr("src.workers.cleanup.requests.post", fake_post)
+
+    cleanup_stale_jobs.run()
+
+    assert calls == [("http://deployments-service:8000/internal/cleanup", 30)]
+
+
+def test_cleanup_stale_jobs_swallows_request_errors(monkeypatch):
+    class Settings:
+        class server:
+            service_url = "http://deployments-service:8000"
+
+    def fake_post(url, timeout):
+        raise RuntimeError("network error")
+
+    monkeypatch.setattr("src.workers.cleanup.load_settings", lambda: Settings())
+    monkeypatch.setattr("src.workers.cleanup.requests.post", fake_post)
+
+    cleanup_stale_jobs.run()
